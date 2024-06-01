@@ -1,0 +1,26 @@
+{
+  "name": "proshop",
+  "version": "1.0.0",
+  "description": "eCommerce application built with the MERN stack",
+  "main": "server.ts",
+  "scripts": {
+    "start": "nodemon backend/server.ts"
+  },
+  "author": "Hossein Rezaei",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.8",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "nodemonConfig": {
+    "events": {
+      "start": "echo '--------------------\n'& clear || cls"
+    }
+  }
+}
