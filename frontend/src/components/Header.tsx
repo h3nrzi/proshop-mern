@@ -8,7 +8,7 @@ const Header = () => {
     <header>
       <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
         <Container>
-          <Link to="/login" className="text-white text-decoration-none">
+          <Link to="/" className="text-white text-decoration-none">
             <Navbar.Brand>
               <img src={logo} alt="proshop" />
               Proshop
