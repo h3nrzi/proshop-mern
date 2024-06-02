@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
 import Product from "../entities/Product";
 
-const ProductScreen = () => {
+const ProductPage = () => {
   const [product, setProduct] = useState<Product>({} as Product);
   const { id } = useParams();
 
@@ -23,7 +23,7 @@ const ProductScreen = () => {
 
       <Row>
         <Col md={5}>
-          <Image src={product.image} alt={product.name} fluid />
+          <Image src={product.image} alt={product.name} fluid rounded />
         </Col>
 
         <Col md={4}>
@@ -78,4 +78,4 @@ const ProductScreen = () => {
   );
 };
 
-export default ProductScreen;
+export default ProductPage;

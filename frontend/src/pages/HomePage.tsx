@@ -4,7 +4,7 @@ import ProductCard from "../components/ProductCard";
 import Product from "../entities/Product";
 import axios from "axios";
 
-const HomeScreen = () => {
+const HomePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const HomeScreen = () => {
   );
 };
 
-export default HomeScreen;
+export default HomePage;
