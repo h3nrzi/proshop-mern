@@ -1,11 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
-import asyncHandler from "../middlewares/asyncHandler";
+import catchAsync from "../middlewares/catchAsync";
 import Product from "../models/product";
 const router = express.Router();
 
 router.get(
   "/",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const products = await Product.find();
 
     return res.json(products);
@@ -14,12 +14,15 @@ router.get(
 
 router.get(
   "/:id",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const product = await Product.findById(req.params.id);
 
-    if (product) return res.status(200).json(product);
+    if (!product) {
+      res.status(404);
+      throw new Error("Product not found");
+    }
 
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(200).json(product);
   })
 );
 
