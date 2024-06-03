@@ -9,7 +9,6 @@ const HomePage = () => {
 
   useEffect(() => {
     axios.get<Product[]>("http://localhost:3000/api/products").then((res) => {
-      console.log(res.data);
       setProducts(res.data);
     });
   }, []);
