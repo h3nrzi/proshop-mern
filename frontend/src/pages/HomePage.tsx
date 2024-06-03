@@ -1,17 +1,14 @@
-import { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import { useGetProductsQuery } from "../../api/product-api";
 import ProductCard from "../components/ProductCard";
-import Product from "../entities/Product";
-import axios from "axios";
 
 const HomePage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const { data: products, isLoading, error } = useGetProductsQuery();
 
-  useEffect(() => {
-    axios.get<Product[]>("http://localhost:3000/api/products").then((res) => {
-      setProducts(res.data);
-    });
-  }, []);
+  if (isLoading) return <h2>Loading...</h2>;
+  // @ts-expect-error
+  if (error) return <div>{error.data?.message || error.error}</div>;
+  if (!products) return;
 
   return (
     <>

@@ -1,8 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import api from "./api";
+import api from "../api/api";
 
 const reducer = combineReducers({
-  api: api.reducer,
+  [api.reducerPath]: api.reducer,
 });
 
 export default reducer;
