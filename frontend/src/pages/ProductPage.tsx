@@ -1,19 +1,16 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
-import Product from "../entities/Product";
+import { useGetProductQuery } from "../../api/product-api";
 
 const ProductPage = () => {
-  const [product, setProduct] = useState<Product>({} as Product);
   const { id } = useParams();
+  const { data: product, isLoading, error } = useGetProductQuery(id!);
 
-  useEffect(() => {
-    axios.get<Product>(`http://localhost:3000/api/products/${id}`).then((res) => {
-      setProduct(res.data);
-    });
-  }, [id]);
+  if (isLoading) return <h2>Loading...</h2>;
+  // @ts-expect-error
+  if (error) return <div>{error.data?.message || error.error}</div>;
+  if (!product) return;
 
   return (
     <>

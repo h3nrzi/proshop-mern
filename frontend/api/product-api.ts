@@ -8,7 +8,12 @@ const productApi = api.injectEndpoints({
       query: () => ({ url: PRODUCT_URL }),
       keepUnusedDataFor: 5, // 5 seconds
     }),
+
+    getProduct: builder.query<Product, string>({
+      query: (productId) => ({ url: PRODUCT_URL + "/" + productId }),
+      keepUnusedDataFor: 5, // 5 seconds
+    }),
   }),
 });
 
-export const { useGetProductsQuery } = productApi;
+export const { useGetProductsQuery, useGetProductQuery } = productApi;
