@@ -2,14 +2,16 @@ import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
 import { useGetProductQuery } from "../api/product-api";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const ProductPage = () => {
   const { id } = useParams();
   const { data: product, isLoading, error } = useGetProductQuery(id!);
 
-  if (isLoading) return <h2>Loading...</h2>;
+  if (isLoading) return <Loader />;
   // @ts-expect-error
-  if (error) return <div>{error.data?.message || error.error}</div>;
+  if (error) return <Message variant="danger">{error.data?.message || error.error}</Message>;
   if (!product) return;
 
   return (
