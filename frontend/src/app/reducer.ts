@@ -1,10 +1,10 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import api from "../api/api";
-import cart from "./cart";
+import apiSlice from "../api/apiSlice";
+import cartSlice from "./cartSlice";
 
 const reducer = combineReducers({
-  [api.reducerPath]: api.reducer,
-  [cart.name]: cart.reducer,
+  [apiSlice.reducerPath]: apiSlice.reducer,
+  [cartSlice.name]: cartSlice.reducer,
 });
 
 export default reducer;

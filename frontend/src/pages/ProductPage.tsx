@@ -1,7 +1,7 @@
 import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Rating from "../components/Rating";
-import { useGetProductQuery } from "../api/product-api";
+import { useGetProductQuery } from "../api/productApi";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 

@@ -1,8 +1,8 @@
-import api from "./api";
+import apiSlice from "./apiSlice";
 import { PRODUCT_URL } from "../constants";
 import Product from "../entities/Product";
 
-const productApi = api.injectEndpoints({
+const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], void>({
       query: () => ({ url: PRODUCT_URL }),
