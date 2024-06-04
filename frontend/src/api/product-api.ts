@@ -1,6 +1,6 @@
 import api from "./api";
 import { PRODUCT_URL } from "../constants";
-import Product from "../src/entities/Product";
+import Product from "../entities/Product";
 
 const productApi = api.injectEndpoints({
   endpoints: (builder) => ({

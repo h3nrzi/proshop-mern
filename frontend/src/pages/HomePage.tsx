@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import { useGetProductsQuery } from "../../api/product-api";
+import { useGetProductsQuery } from "../api/product-api";
 import ProductCard from "../components/ProductCard";
 
 const HomePage = () => {
