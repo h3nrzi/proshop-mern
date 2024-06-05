@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { cartAdded } from "../app/cartSlice";
+import { cartAdded } from "../app/cart-slice";
 
 const ProductPage = () => {
   const { id } = useParams();

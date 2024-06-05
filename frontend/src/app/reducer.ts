@@ -1,6 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import apiSlice from "../api/apiSlice";
-import cartSlice from "./cartSlice";
+import cartSlice from "./cart-slice";
 
 const reducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
