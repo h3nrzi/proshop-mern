@@ -25,7 +25,7 @@ const Header = () => {
                 <Nav.Link as="span">
                   <FaShoppingCart /> Cart
                   {cartItems.length > 0 && (
-                    <Badge bg="info" className="ms-2">
+                    <Badge bg="success" className="ms-2">
                       {cartItems.reduce((acc, item) => acc + item.qty, 0)}
                     </Badge>
                   )}

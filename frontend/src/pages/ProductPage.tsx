@@ -22,7 +22,7 @@ const ProductPage = () => {
 
   const addToCartHandler = () => {
     dispatch(cartAdded({ ...product, qty }));
-    navigate("/");
+    navigate("/cart");
   };
 
   return (
