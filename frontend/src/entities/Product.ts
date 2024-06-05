@@ -9,4 +9,5 @@ export default interface Product {
   countInStock: number;
   rating: number;
   numReviews: number;
+  qty: number;
 }

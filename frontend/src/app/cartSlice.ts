@@ -28,7 +28,6 @@ const initialCartState: Cart = {
 const persistedCartState: Cart | null = JSON.parse(localStorage.getItem("cart")!);
 const initialState: Cart = persistedCartState || initialCartState;
 
-// Define the cart slice using createSlice from Redux Toolkit
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -66,6 +65,5 @@ const cartSlice = createSlice({
   },
 });
 
-// Export the cartAdded action creator and the default reducer from the cart slice
 export const { cartAdded } = cartSlice.actions;
 export default cartSlice;
