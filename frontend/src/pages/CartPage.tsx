@@ -1,8 +1,8 @@
 import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { addToCart } from "../app/cart-slice";
+import { Link, useNavigate } from "react-router-dom";
+import { addToCart, removeFromCart } from "../app/cart-slice";
 import { RootState } from "../app/store";
 import Message from "../components/Message";
 import Product from "../entities/Product";
@@ -10,10 +10,18 @@ import Product from "../entities/Product";
 const CartPage = () => {
   const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const addToCartHandler = (item: Product, value: number) => {
     dispatch(addToCart({ ...item, qty: value }));
+  };
+
+  const removeFromCartHandler = (_id: string) => {
+    dispatch(removeFromCart({ _id }));
+  };
+
+  const checkoutHandler = () => {
+    navigate("/login?redirect=/shipping");
   };
 
   return (
@@ -56,7 +64,12 @@ const CartPage = () => {
                   </Col>
 
                   <Col md={2}>
-                    <Button type="button" variant="danger" className="text-white">
+                    <Button
+                      type="button"
+                      variant="danger"
+                      className="text-white"
+                      onClick={() => removeFromCartHandler(item._id)}
+                    >
                       <FaTrash />
                     </Button>
                   </Col>
@@ -84,7 +97,12 @@ const CartPage = () => {
             </ListGroup.Item>
 
             <ListGroup.Item className="text-center">
-              <Button type="button" variant="success text-white" disabled={cartItems.length === 0}>
+              <Button
+                type="button"
+                variant="success text-white"
+                disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
+              >
                 Proceed To Checkout
               </Button>
             </ListGroup.Item>

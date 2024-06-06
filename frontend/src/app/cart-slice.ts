@@ -20,7 +20,6 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    // Reducer to handle adding items to the cart
     addToCart: (cart, action: PayloadAction<Product>): void => {
       // Check if the item being added already exists in the cart
       const existingItem = cart.cartItems.find((item) => item._id === action.payload._id);
@@ -40,8 +39,16 @@ const cartSlice = createSlice({
       // Persist the updated cart state in local storage
       localStorage.setItem("cart", JSON.stringify(cart));
     },
+
+    removeFromCart: (cart, action: PayloadAction<{ _id: string }>) => {
+      cart.cartItems = cart.cartItems.filter((item) => item._id !== action.payload._id);
+
+      cart = updateCart(cart);
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+    },
   },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 export default cartSlice;
