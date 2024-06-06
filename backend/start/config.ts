@@ -1,8 +1,15 @@
-import { Express } from "express";
+import express, { Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
 
 module.exports = (app: Express) => {
+  // Body Parser
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
+  // Logging Request
   if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+
+  // CORS Origin Request
   app.use(cors());
 };

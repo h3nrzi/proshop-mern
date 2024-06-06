@@ -1,10 +1,28 @@
 import { RequestHandler } from "express";
+import { LoginDto } from "../Dto/user";
+import User from "../models/user";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
 export const login: RequestHandler = async (req, res, next) => {
-  res.send("auth user");
+  const { email, password } = req.body as LoginDto;
+
+  const user = await User.findOne({ email });
+
+  const validPassword = await user?.matchPassword(password);
+
+  if (!user || !validPassword) {
+    res.status(401);
+    throw new Error("Invalid Email or Password");
+  }
+
+  return res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
+  });
 };
 
 // @desc    Register user
