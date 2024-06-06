@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
-import { LoginDto } from "../Dto/user";
+import { LoginDto, RegisterDto } from "../Dto/user";
 import User from "../models/user";
-import jwt from "jsonwebtoken";
+import generateToken from "../utils/generateToken";
+import _ from "lodash";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -11,23 +12,14 @@ export const login: RequestHandler = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  const validPassword = await user?.matchPassword(password);
+  const validPassword = await user?.comparePassword(password);
 
   if (!user || !validPassword) {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
-    expiresIn: "30d",
-  });
-
-  res.cookie("jwt", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-  });
+  generateToken(res, user._id);
 
   return res.json({
     _id: user._id,
@@ -41,7 +33,25 @@ export const login: RequestHandler = async (req, res, next) => {
 // @route   POST /api/users
 // @access  Public
 export const register: RequestHandler = async (req, res, next) => {
-  res.send("register user");
+  const { email } = req.body as RegisterDto;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const newUser = await User.create(_.pick(req.body, ["name", "email", "password"]));
+
+  if (!newUser) {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
+
+  generateToken(res, newUser._id);
+
+  return res.status(200).json(_.pick(newUser, "_id", "name", "email", "isAdmin"));
 };
 
 // @desc    Logout user (clear cookie)
