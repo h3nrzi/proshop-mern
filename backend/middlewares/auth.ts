@@ -2,7 +2,7 @@ import { RequestHandler, Request } from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   user?: any;
 }
 

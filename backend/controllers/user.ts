@@ -3,6 +3,7 @@ import { LoginDto, RegisterDto } from "../Dto/user";
 import User from "../models/user";
 import generateToken from "../utils/generateToken";
 import _ from "lodash";
+import { CustomRequest } from "../middlewares/auth";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -75,15 +76,34 @@ export const logout: RequestHandler = async (req, res, next) => {
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
-export const getUserProfile: RequestHandler = async (req, res, next) => {
-  res.send("get profile");
+export const getUserProfile: RequestHandler = async (req: CustomRequest, res, next) => {
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  return res.status(200).json(_.pick(user, "_id", "name", "email", "isAdmin"));
 };
 
 // @desc    Update user profile
 // @route   PATCH /api/users/profile
 // @access  Private
-export const updateUserProfile: RequestHandler = async (req, res, next) => {
-  res.send("update profile");
+export const updateUserProfile: RequestHandler = async (req: CustomRequest, res, next) => {
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  // Update user fields
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+  if (req.body.password) user.password = req.body.password;
+
+  const updatedUser = await user.save();
+
+  return res.status(200).json(_.pick(updatedUser, "_id", "name", "email", "isAdmin"));
 };
 
 // @desc    Get users
