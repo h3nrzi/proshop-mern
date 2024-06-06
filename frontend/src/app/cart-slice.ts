@@ -21,7 +21,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     // Reducer to handle adding items to the cart
-    cartAdded: (cart, action: PayloadAction<Product>): void => {
+    addToCart: (cart, action: PayloadAction<Product>): void => {
       // Check if the item being added already exists in the cart
       const existingItem = cart.cartItems.find((item) => item._id === action.payload._id);
 
@@ -43,5 +43,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { cartAdded } = cartSlice.actions;
+export const { addToCart } = cartSlice.actions;
 export default cartSlice;

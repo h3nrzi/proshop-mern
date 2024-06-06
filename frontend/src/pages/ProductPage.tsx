@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { cartAdded } from "../app/cart-slice";
+import { addToCart } from "../app/cart-slice";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -21,7 +21,7 @@ const ProductPage = () => {
   if (!product) return;
 
   const addToCartHandler = () => {
-    dispatch(cartAdded({ ...product, qty }));
+    dispatch(addToCart({ ...product, qty }));
     navigate("/cart");
   };
 

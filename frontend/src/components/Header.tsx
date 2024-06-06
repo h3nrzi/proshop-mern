@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 
 const Header = () => {
-  const { cartItems } = useSelector((rootState: RootState) => rootState.cart);
+  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
 
   return (
     <header>

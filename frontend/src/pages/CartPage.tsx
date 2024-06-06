@@ -2,18 +2,18 @@ import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap"
 import { FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { cartAdded } from "../app/cart-slice";
+import { addToCart } from "../app/cart-slice";
 import { RootState } from "../app/store";
 import Message from "../components/Message";
 import Product from "../entities/Product";
 
 const CartPage = () => {
-  const { cartItems } = useSelector((rooState: RootState) => rooState.cart);
+  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
   const dispatch = useDispatch();
   // const navigate = useNavigate();
 
   const addToCartHandler = (item: Product, value: number) => {
-    dispatch(cartAdded({ ...item, qty: value }));
+    dispatch(addToCart({ ...item, qty: value }));
   };
 
   return (
@@ -78,7 +78,6 @@ const CartPage = () => {
                 </span>
                 Items
               </h3>
-
               <h6 className="text-success">
                 ${cartItems.reduce((acc, item) => (acc + item.price) * item.qty, 0)}
               </h6>
