@@ -48,7 +48,12 @@ export const register: RequestHandler = async (req, res, next) => {
 // @route   POST /api/users/logout
 // @access  Private
 export const logout: RequestHandler = async (req, res, next) => {
-  res.send("logout user");
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+
+  return res.status(200).json({ message: "Logged out successfully!" });
 };
 
 // @desc    Get user profile
