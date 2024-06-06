@@ -10,23 +10,25 @@ import _ from "lodash";
 export const login: RequestHandler = async (req, res, next) => {
   const { email, password } = req.body as LoginDto;
 
+  // Find user by email
   const user = await User.findOne({ email });
-
-  const validPassword = await user?.comparePassword(password);
-
-  if (!user || !validPassword) {
+  if (!user) {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
 
+  // Check if password is valid
+  const validPassword = await user?.comparePassword(password);
+  if (!validPassword) {
+    res.status(401);
+    throw new Error("Invalid Email or Password");
+  }
+
+  // Generate and send token
   generateToken(res, user._id);
 
-  return res.json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    isAdmin: user.isAdmin,
-  });
+  // Send response
+  return res.status(200).json(_.pick(user, "_id", "name", "email", "isAdmin"));
 };
 
 // @desc    Register user
