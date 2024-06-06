@@ -46,7 +46,7 @@ export const register: RequestHandler = async (req, res, next) => {
 
 // @desc    Logout user (clear cookie)
 // @route   POST /api/users/logout
-// @access  Private
+// @access  Public
 export const logout: RequestHandler = async (req, res, next) => {
   res.cookie("jwt", "", {
     httpOnly: true,
