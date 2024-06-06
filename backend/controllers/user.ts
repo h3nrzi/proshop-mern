@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import { LoginDto } from "../Dto/user";
 import User from "../models/user";
+import jwt from "jsonwebtoken";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -16,6 +17,18 @@ export const login: RequestHandler = async (req, res, next) => {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+    expiresIn: "30d",
+  });
+
+  // Set JWT as HTTP-only cookie
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  });
 
   return res.json({
     _id: user._id,
