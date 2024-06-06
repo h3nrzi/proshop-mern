@@ -22,7 +22,6 @@ export const login: RequestHandler = async (req, res, next) => {
     expiresIn: "30d",
   });
 
-  // Set JWT as HTTP-only cookie
   res.cookie("jwt", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -55,41 +54,41 @@ export const logout: RequestHandler = async (req, res, next) => {
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
-export const getProfile: RequestHandler = async (req, res, next) => {
+export const getUserProfile: RequestHandler = async (req, res, next) => {
   res.send("get profile");
 };
 
 // @desc    Update user profile
 // @route   PATCH /api/users/profile
 // @access  Private
-export const updateProfile: RequestHandler = async (req, res, next) => {
+export const updateUserProfile: RequestHandler = async (req, res, next) => {
   res.send("update profile");
 };
 
 // @desc    Get users
 // @route   GET /api/users
 // @access  Private -> Admin
-export const getAll: RequestHandler = async (req, res, next) => {
+export const getAllUsers: RequestHandler = async (req, res, next) => {
   res.send("get all users");
 };
 
 // @desc    Get user
 // @route   GET /api/users/:id
 // @access  Private -> Admin
-export const getOne: RequestHandler = async (req, res, next) => {
+export const getUser: RequestHandler = async (req, res, next) => {
   res.send("get user");
 };
 
 // @desc    Update user
 // @route   PATCH /api/users/:id
 // @access  Private -> Admin
-export const update: RequestHandler = async (req, res, next) => {
+export const updateUser: RequestHandler = async (req, res, next) => {
   res.send("update user");
 };
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private -> Admin
-export const remove: RequestHandler = async (req, res, next) => {
+export const deleteUser: RequestHandler = async (req, res, next) => {
   res.send("delete user");
 };

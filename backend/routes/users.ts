@@ -1,28 +1,35 @@
 import express from "express";
-import * as userController from "../controllers/user";
+import {
+  deleteUser,
+  getAllUsers,
+  getUser,
+  getUserProfile,
+  login,
+  logout,
+  register,
+  updateUser,
+  updateUserProfile,
+} from "../controllers/user";
+import { admin, protect } from "../middlewares/auth";
 import catchAsync from "../middlewares/catchAsync";
 const router = express.Router();
-import { admin, protect } from "../middlewares/auth";
 
-router.post("/", catchAsync(userController.register));
-router.post("/login", catchAsync(userController.login));
-router.post("/logout", catchAsync(userController.logout));
+router.post("/", catchAsync(register));
+router.post("/login", catchAsync(login));
+router.post("/logout", catchAsync(logout));
 
 router.use(catchAsync(protect));
 
-router
-  .route("/profile")
-  .get(catchAsync(userController.getProfile))
-  .patch(catchAsync(userController.updateProfile));
+router.route("/profile").get(catchAsync(getUserProfile)).patch(catchAsync(updateUserProfile));
 
 router.use(catchAsync(admin));
 
-router.get("/", catchAsync(userController.getAll));
+router.get("/", catchAsync(getAllUsers));
 
 router
   .route("/:id")
-  .get(catchAsync(userController.getOne))
-  .patch(catchAsync(userController.update))
-  .delete(catchAsync(userController.remove));
+  .get(catchAsync(getUser))
+  .patch(catchAsync(updateUser))
+  .delete(catchAsync(deleteUser));
 
 export default router;
