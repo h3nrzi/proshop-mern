@@ -18,10 +18,16 @@ router.post("/", catchAsync(register));
 router.post("/login", catchAsync(login));
 router.post("/logout", catchAsync(logout));
 
+////////// Access -> Private
 router.use(catchAsync(protect));
 
-router.route("/profile").get(catchAsync(getUserProfile)).patch(catchAsync(updateUserProfile));
+router
+  //
+  .route("/profile")
+  .get(catchAsync(getUserProfile))
+  .patch(catchAsync(updateUserProfile));
 
+////////// Access -> Admin
 router.use(catchAsync(admin));
 
 router.get("/", catchAsync(getAllUsers));
