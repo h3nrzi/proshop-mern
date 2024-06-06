@@ -33,24 +33,28 @@ export const login: RequestHandler = async (req, res, next) => {
 // @route   POST /api/users
 // @access  Public
 export const register: RequestHandler = async (req, res, next) => {
-  const { email } = req.body as RegisterDto;
+  const { email, name, password } = req.body as RegisterDto;
 
+  // Check if user already exists
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");
   }
 
-  const newUser = await User.create(_.pick(req.body, ["name", "email", "password"]));
+  // Create a new user
+  const newUser = new User({ name, email, password });
+  await newUser.save();
 
   if (!newUser) {
     res.status(400);
     throw new Error("Invalid user data");
   }
 
+  // Generate and send token
   generateToken(res, newUser._id);
 
+  // Send response
   return res.status(200).json(_.pick(newUser, "_id", "name", "email", "isAdmin"));
 };
 
