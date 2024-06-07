@@ -1,4 +1,4 @@
-import apiSlice from "./apiSlice";
+import apiSlice from "./api-slice";
 import { PRODUCT_URL } from "../constants";
 import Product from "../entities/Product";
 
