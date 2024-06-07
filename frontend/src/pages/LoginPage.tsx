@@ -20,7 +20,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [loginMutation, { isLoading }] = useLoginMutation();
   const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
 
   const { search } = useLocation();
@@ -33,7 +33,7 @@ const LoginPage = () => {
 
   const submitHandler = async (data: FormData) => {
     try {
-      const res = await login(data).unwrap();
+      const res = await loginMutation(data).unwrap();
       dispatch(setCredentials({ ...res }));
       navigate(redirect);
     } catch (err) {

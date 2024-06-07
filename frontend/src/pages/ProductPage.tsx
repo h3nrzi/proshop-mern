@@ -1,19 +1,19 @@
+import { useState } from "react";
 import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Rating from "../components/Rating";
+import { useDispatch } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useGetProductQuery } from "../api/products-api";
+import { addToCart } from "../app/cart-slice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../app/cart-slice";
+import Rating from "../components/Rating";
 
 const ProductPage = () => {
   const { id } = useParams();
   const { data: product, isLoading, error } = useGetProductQuery(id!);
   const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   if (isLoading) return <Loader />;
   // @ts-expect-error
@@ -22,7 +22,7 @@ const ProductPage = () => {
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
-    navigate("/cart");
+    toast.success("Added to cart");
   };
 
   return (
