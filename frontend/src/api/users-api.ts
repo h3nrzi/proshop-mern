@@ -6,7 +6,7 @@ const usersApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<UserInfo, { email: string; password: string }>({
       query: (data) => ({
-        url: USERS_URL + "/auth",
+        url: USERS_URL + "/login",
         method: "POST",
         body: data,
       }),

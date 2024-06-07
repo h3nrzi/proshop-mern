@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import morgan from "morgan";
-import cors from "cors";
+// import cors from "cors";
 import cookieParser from "cookie-parser";
 
 module.exports = (app: Express) => {
@@ -15,5 +15,5 @@ module.exports = (app: Express) => {
   if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
   // CORS Origin Request
-  app.use(cors());
+  // app.use(cors());
 };
