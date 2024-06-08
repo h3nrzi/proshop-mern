@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../app/store";
 import { saveShippingAddress } from "../app/cart-slice";
+import CheckoutSteps from "../components/CheckoutSteps";
 
 type FormData = ShippingAddress;
 
@@ -23,6 +24,8 @@ const ShippingPage = () => {
 
   return (
     <FormContainer>
+      <CheckoutSteps step1 step2 />
+
       <h1>Shipping</h1>
 
       <Form onSubmit={handleSubmit(submitHandler)}>
