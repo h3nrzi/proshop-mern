@@ -21,10 +21,7 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <PrivateRoute />,
-        children: [
-          { path: "shipping", element: <ShippingPage /> },
-          { path: "shipping", element: <ShippingPage /> },
-        ],
+        children: [{ path: "shipping", element: <ShippingPage /> }],
       },
     ],
   },
