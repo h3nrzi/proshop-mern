@@ -1,7 +1,7 @@
 import { Badge, Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLogoutMutation } from "../api/users-api";
 import { clearCredentials } from "../app/auth-slice";
@@ -13,14 +13,16 @@ const Header = () => {
   const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
   const dispatch = useDispatch();
   const [logoutApiCall] = useLogoutMutation();
+  const navigate = useNavigate();
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap();
       dispatch(clearCredentials());
-      toast.success("logged out successfully!");
+      toast.success("logged out successfully!", { position: "top-center" });
+      navigate("/");
     } catch (err) {
-      toast.error("some error occurred!");
+      toast.error("some error occurred!", { position: "top-center" });
     }
   };
 

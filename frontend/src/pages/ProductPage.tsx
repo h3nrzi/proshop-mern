@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetProductQuery } from "../api/products-api";
 import { addToCart } from "../app/cart-slice";
@@ -13,6 +13,8 @@ const ProductPage = () => {
   const { id } = useParams();
   const { data: product, isLoading, error } = useGetProductQuery(id!);
   const [qty, setQty] = useState(1);
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   if (isLoading) return <Loader />;
@@ -22,7 +24,11 @@ const ProductPage = () => {
 
   const addToCartHandler = () => {
     dispatch(addToCart({ ...product, qty }));
-    toast.success("Added to cart");
+    toast.success("Added to your cart", {
+      onClick: () => navigate("/cart"),
+      position: "top-center",
+      style: { cursor: "pointer" },
+    });
   };
 
   return (
