@@ -27,9 +27,7 @@ const LoginPage = () => {
   const searchParams = new URLSearchParams(search);
   const redirect = searchParams.get("redirect") || "/";
 
-  console.log(redirect);
-
-  if (redirect === "/shipping") toast.warn("Please login first!", { position: "top-center" });
+  if (redirect !== "/") toast.warn("Please login first!", { position: "top-center" });
 
   useEffect(() => {
     if (userInfo) navigate(redirect);
