@@ -9,7 +9,6 @@ import { CustomRequest } from "../middlewares/auth";
 // @route   POST /api/users/login
 // @access  Public
 export const login: RequestHandler = async (req, res, next) => {
-  console.log(req.body);
   const { email, password } = req.body as LoginDto;
 
   // Find user by email
