@@ -1,12 +1,14 @@
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
-import ShippingAddress from "../entities/ShippingAddress";
-import FormContainer from "../components/FormContainer";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../app/store";
+import { toast } from "react-toastify";
 import { saveShippingAddress } from "../app/cart-slice";
+import { RootState } from "../app/store";
 import CheckoutSteps from "../components/CheckoutSteps";
+import FormContainer from "../components/FormContainer";
+import ShippingAddress from "../entities/ShippingAddress";
 
 type FormData = ShippingAddress;
 
@@ -14,8 +16,16 @@ const ShippingPage = () => {
   const { register, handleSubmit } = useForm<FormData>();
 
   const shippingAddress = useSelector((rootState: RootState) => rootState.cart.shippingAddress);
+  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      toast.warn("Please pick a product", { position: "top-center" });
+      navigate("/cart");
+    }
+  }, [cartItems, navigate]);
 
   const submitHandler = (data: FormData) => {
     dispatch(saveShippingAddress(data));
@@ -25,9 +35,7 @@ const ShippingPage = () => {
   return (
     <FormContainer>
       <CheckoutSteps step1 step2 />
-
       <h1>Shipping</h1>
-
       <Form onSubmit={handleSubmit(submitHandler)}>
         <Form.Group controlId="address" className="my-3">
           <Form.Label>Address</Form.Label>
@@ -64,7 +72,6 @@ const ShippingPage = () => {
             {...register("country", { value: shippingAddress?.country })}
           />
         </Form.Group>
-
         <Button type="submit" variant="primary" className="mt-2 w-25">
           Submit
         </Button>

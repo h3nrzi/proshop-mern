@@ -8,5 +8,5 @@ export default interface Cart {
   taxPrice: number;
   totalPrice: number;
   shippingAddress: ShippingAddress | null;
-  paymentMethod: string;
+  paymentMethod: string | null;
 }

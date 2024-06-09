@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import ProductPage from "./pages/ProductPage";
 import RegisterPage from "./pages/RegisterPage";
 import ShippingPage from "./pages/ShippingPage";
+import PaymentPage from "./pages/PaymentPage";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <PrivateRoute />,
-        children: [{ path: "shipping", element: <ShippingPage /> }],
+        children: [
+          { path: "shipping", element: <ShippingPage /> },
+          { path: "payment", element: <PaymentPage /> },
+        ],
       },
     ],
   },

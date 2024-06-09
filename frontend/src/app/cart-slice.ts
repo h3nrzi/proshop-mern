@@ -10,7 +10,7 @@ const initialCartState: Cart = {
   taxPrice: 0,
   totalPrice: 0,
   shippingAddress: null,
-  paymentMethod: "PayPal",
+  paymentMethod: null,
 };
 
 const persistedCartState: Cart | null = JSON.parse(localStorage.getItem("cart")!);
@@ -48,8 +48,16 @@ const cartSlice = createSlice({
       cart = updateCart(cart);
       localStorage.setItem("cart", JSON.stringify(cart));
     },
+
+    savePaymentMethod: (cart, action) => {
+      cart.paymentMethod = action.payload;
+
+      cart = updateCart(cart);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    },
   },
 });
 
-export const { addToCart, removeFromCart, saveShippingAddress } = cartSlice.actions;
+export const { addToCart, removeFromCart, saveShippingAddress, savePaymentMethod } =
+  cartSlice.actions;
 export default cartSlice;
