@@ -25,7 +25,7 @@ const PaymentPage = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethodRef.current?.value));
-    navigate("/placeholder");
+    navigate("/placeorder");
   };
 
   return (

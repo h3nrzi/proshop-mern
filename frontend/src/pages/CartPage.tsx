@@ -6,9 +6,12 @@ import { addToCart, removeFromCart } from "../app/cart-slice";
 import { RootState } from "../app/store";
 import Message from "../components/Message";
 import Product from "../entities/Product";
+import CheckoutSteps from "../components/CheckoutSteps";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
+  const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,11 +24,13 @@ const CartPage = () => {
   };
 
   const checkoutHandler = () => {
+    if (!userInfo) toast.warn("Please login first!", { position: "top-center" });
     navigate("/login?redirect=/shipping");
   };
 
   return (
     <Row>
+      <CheckoutSteps step1 />
       <Col md={8}>
         <h1 className="mb-5">Shopping Cart</h1>
         {cartItems.length === 0 ? (
