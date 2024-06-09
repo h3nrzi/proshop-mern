@@ -1,4 +1,6 @@
 import { RequestHandler } from "express";
+import CreateOrderDto from "../Dto/createOrderDto";
+import Order from "../models/order";
 
 // @desc    Get All Orders
 // @route   GET /api/orders
@@ -18,6 +20,31 @@ export const getOneOrder: RequestHandler = async (req, res, next) => {
 // @route   POST /api/orders
 // @access  Private
 export const createOrder: RequestHandler = async (req, res, next) => {
+  const {
+    orderItems,
+    itemsPrice,
+    paymentMethod,
+    shippingAddress,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+  } = req.body as CreateOrderDto;
+
+  if (!orderItems || orderItems.length === 0) {
+    res.status(404);
+    throw new Error("No order items");
+  }
+
+  new Order({
+    orderItems: orderItems.map((orderItem) => ({ ...orderItem, product: orderItem._id })),
+    itemsPrice,
+    paymentMethod,
+    shippingAddress,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+  });
+
   res.status(200).send("add order items");
 };
 

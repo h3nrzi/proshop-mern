@@ -1,9 +1,10 @@
 import { RequestHandler } from "express";
-import { LoginDto, RegisterDto } from "../Dto/user";
+import _ from "lodash";
+import LoginDto from "../Dto/LoginDto";
+import RegisterDto from "../Dto/RegisterDto";
+import { CustomRequest } from "../middlewares/auth";
 import User from "../models/user";
 import generateToken from "../utils/generateToken";
-import _ from "lodash";
-import { CustomRequest } from "../middlewares/auth";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
