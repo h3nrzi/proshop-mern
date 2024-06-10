@@ -9,8 +9,8 @@ import { RootState } from "../app/store";
 import logo from "../assets/logo.png";
 
 const Header = () => {
-  const cartItems = useSelector((rootState: RootState) => rootState.cart.orderItems);
-  const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
+  const orderItems = useSelector((state: RootState) => state.cart.orderItems);
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const dispatch = useDispatch();
   const [logoutApiCall] = useLogoutMutation();
   const navigate = useNavigate();
@@ -42,9 +42,9 @@ const Header = () => {
               <Link to="/cart" className="text-decoration-none">
                 <Nav.Link as="span">
                   <FaShoppingCart size="20px" /> Cart
-                  {cartItems.length > 0 && (
+                  {orderItems.length > 0 && (
                     <Badge bg="success" className="ms-2">
-                      {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                      {orderItems.reduce((acc, item) => acc + item.qty, 0)}
                     </Badge>
                   )}
                 </Nav.Link>

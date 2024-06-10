@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCreateOrderMutation } from "../api/orders-api";
@@ -10,10 +10,9 @@ import Message from "../components/Message";
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const paymentMethod = useSelector((state: RootState) => state.cart.paymentMethod);
-  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [, { isLoading }] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -22,7 +21,7 @@ const PlaceOrderPage = () => {
     }
   }, [navigate, paymentMethod]);
 
-  // const placeorderHandler = async () => {};
+  const placeorderHandler = async () => {};
 
   return (
     <>
