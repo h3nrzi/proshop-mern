@@ -10,8 +10,8 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import { toast } from "react-toastify";
 
 const CartPage = () => {
-  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
-  const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
+  const cartItems = useSelector((state: RootState) => state.cart.orderItems);
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

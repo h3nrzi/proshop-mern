@@ -4,7 +4,7 @@ import Product from "../entities/Product";
 import { updateCart } from "../utils/cart-utils";
 
 const initialCartState: Cart = {
-  cartItems: [],
+  orderItems: [],
   itemsPrice: 0,
   shippingPrice: 0,
   taxPrice: 0,
@@ -21,14 +21,14 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (cart, action: PayloadAction<Product>): void => {
-      const existingItem = cart.cartItems.find((item) => item._id === action.payload._id);
+      const existingItem = cart.orderItems.find((item) => item._id === action.payload._id);
 
       if (existingItem) {
-        cart.cartItems = cart.cartItems.map((item) =>
+        cart.orderItems = cart.orderItems.map((item) =>
           item._id === action.payload._id ? action.payload : item
         );
       } else {
-        cart.cartItems.push(action.payload);
+        cart.orderItems.push(action.payload);
       }
 
       cart = updateCart(cart);
@@ -36,7 +36,7 @@ const cartSlice = createSlice({
     },
 
     removeFromCart: (cart, action: PayloadAction<{ _id: string }>) => {
-      cart.cartItems = cart.cartItems.filter((item) => item._id !== action.payload._id);
+      cart.orderItems = cart.orderItems.filter((item) => item._id !== action.payload._id);
 
       cart = updateCart(cart);
       localStorage.setItem("cart", JSON.stringify(cart));
@@ -57,7 +57,7 @@ const cartSlice = createSlice({
     },
 
     clearCartItems: (cart) => {
-      cart.cartItems = [];
+      cart.orderItems = [];
 
       cart = updateCart(cart);
       localStorage.setItem("cart", JSON.stringify(cart));

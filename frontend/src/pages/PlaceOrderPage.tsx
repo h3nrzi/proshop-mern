@@ -49,10 +49,10 @@ const PlaceOrderPage = () => {
 
             <ListGroup.Item>
               <h2>Order Items</h2>
-              {cart.cartItems.length === 0 ? (
+              {cart.orderItems.length === 0 ? (
                 <Message>Your Cart is empty</Message>
               ) : (
-                cart.cartItems.map((item) => (
+                cart.orderItems.map((item) => (
                   <ListGroup key={item._id}>
                     <Row className="gap-1 align-items-center">
                       <Col md={1} className="my-1">
@@ -109,7 +109,7 @@ const PlaceOrderPage = () => {
                   type="button"
                   variant="success"
                   className="text-white px-5"
-                  disabled={cart.cartItems.length === 0}
+                  disabled={cart.orderItems.length === 0}
                   onClick={placeorderHandler}
                 >
                   Place Order

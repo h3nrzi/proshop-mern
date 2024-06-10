@@ -7,7 +7,7 @@ const roundToTwoDecimals = (num: number): number => {
 
 export const updateCart = (cart: Cart): Cart => {
   // Calculate items price by summing up the prices of all items in the cart
-  const subtotal = cart.cartItems.reduce((acc, item) => (acc + item.price) * item.qty, 0);
+  const subtotal = cart.orderItems.reduce((acc, item) => (acc + item.price) * item.qty, 0);
   cart.itemsPrice = roundToTwoDecimals(subtotal);
 
   // Calculate shipping price (free if order is over $100, otherwise $10 shipping)

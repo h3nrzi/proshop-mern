@@ -15,8 +15,8 @@ type FormData = ShippingAddress;
 const ShippingPage = () => {
   const { register, handleSubmit } = useForm<FormData>();
 
-  const shippingAddress = useSelector((rootState: RootState) => rootState.cart.shippingAddress);
-  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
+  const shippingAddress = useSelector((state: RootState) => state.cart.shippingAddress);
+  const cartItems = useSelector((state: RootState) => state.cart.orderItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

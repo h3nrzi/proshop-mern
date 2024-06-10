@@ -2,7 +2,7 @@ import Product from "./Product";
 import ShippingAddress from "./ShippingAddress";
 
 export default interface Cart {
-  cartItems: Product[];
+  orderItems: Product[];
   itemsPrice: number;
   shippingPrice: number;
   taxPrice: number;

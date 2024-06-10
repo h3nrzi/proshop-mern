@@ -9,7 +9,7 @@ import { RootState } from "../app/store";
 import logo from "../assets/logo.png";
 
 const Header = () => {
-  const cartItems = useSelector((rootState: RootState) => rootState.cart.cartItems);
+  const cartItems = useSelector((rootState: RootState) => rootState.cart.orderItems);
   const userInfo = useSelector((rootState: RootState) => rootState.auth.userInfo);
   const dispatch = useDispatch();
   const [logoutApiCall] = useLogoutMutation();
