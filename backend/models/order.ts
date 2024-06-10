@@ -1,6 +1,44 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types, Document } from "mongoose";
 
-const orderSchema = new Schema(
+interface OrderItem {
+  name: string;
+  qty: number;
+  image: string;
+  price: number;
+  product: Types.ObjectId;
+}
+
+interface ShippingAddress {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+interface PaymentResult {
+  id?: string;
+  status?: string;
+  update_time?: string;
+  email_address?: string;
+}
+
+interface IOrder extends Document {
+  user: Types.ObjectId;
+  orderItems: OrderItem[];
+  shippingAddress: ShippingAddress;
+  paymentMethod: string;
+  paymentResult?: PaymentResult;
+  itemsPrice: number;
+  taxPrice: number;
+  shippingPrice: number;
+  totalPrice: number;
+  isPaid: boolean;
+  paidAt?: number;
+  isDelivered: boolean;
+  deliveredAt?: number;
+}
+
+const orderSchema = new Schema<IOrder>(
   {
     user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 
