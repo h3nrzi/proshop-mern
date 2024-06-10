@@ -91,20 +91,16 @@ const CartPage = () => {
             <ListGroup.Item>
               <h3>
                 Subtotal
-                <span className="text-success mx-1">
-                  {cartItems.reduce((acc, item) => acc + item.qty, 0)}
-                </span>
+                <span className="mx-1">{cartItems.reduce((acc, item) => acc + item.qty, 0)}</span>
                 Items
               </h3>
-              <h6 className="text-success">
-                ${cartItems.reduce((acc, item) => (acc + item.price) * item.qty, 0)}
-              </h6>
+              <h6>${cartItems.reduce((acc, item) => (acc + item.price) * item.qty, 0)}</h6>
             </ListGroup.Item>
 
             <ListGroup.Item className="text-center">
               <Button
                 type="button"
-                variant="success text-white"
+                className="px-5 text-white"
                 disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >
