@@ -16,11 +16,11 @@ router.use(catchAsync(auth.protect));
 router.get("/myorders", catchAsync(getMyOrders));
 router.post("/", catchAsync(createOrder));
 router.patch("/:id/pay", catchAsync(updateOrderToPaid));
+router.get("/:id", catchAsync(getOneOrder));
 
 ////////// Admin
 router.use(catchAsync(auth.admin));
 router.get("/", catchAsync(getAllOrder));
-router.get("/:id", catchAsync(getOneOrder));
 router.patch("/:id/deliver", catchAsync(updateOrderToDeliver));
 
 export default router;

@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCreateOrderMutation } from "../api/orders-api";
+import { clearCartItems } from "../app/cart-slice";
 import { RootState } from "../app/store";
 import CheckoutSteps from "../components/CheckoutSteps";
 import Message from "../components/Message";
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cart);
   const paymentMethod = useSelector((state: RootState) => state.cart.paymentMethod);
-  const [, { isLoading }] = useCreateOrderMutation();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
 
   useEffect(() => {
     if (!paymentMethod) {
@@ -21,7 +23,16 @@ const PlaceOrderPage = () => {
     }
   }, [navigate, paymentMethod]);
 
-  const placeorderHandler = async () => {};
+  const placeorderHandler = async () => {
+    try {
+      const res = await createOrder({ ...cart }).unwrap();
+      dispatch(clearCartItems());
+      navigate("/order/" + res._id);
+    } catch (err) {
+      // @ts-expect-error
+      if (err) toast.error(err.data.message, { position: "top-center" });
+    }
+  };
 
   return (
     <>
@@ -63,7 +74,7 @@ const PlaceOrderPage = () => {
                       </Col>
 
                       <Col md={4}>
-                        <p className="fw-bold">
+                        <p className="fw-bold ">
                           {item.qty} X ${item.price} = ${item.qty * item.price}
                         </p>
                       </Col>
@@ -100,6 +111,13 @@ const PlaceOrderPage = () => {
                 <Row>
                   <Col>Tax Price:</Col>
                   <Col>${cart.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total Price:</Col>
+                  <Col>${cart.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
 

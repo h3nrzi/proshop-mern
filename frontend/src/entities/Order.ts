@@ -1,39 +1,42 @@
 import Product from "./Product";
-import ShippingAddress from "./ShippingAddress";
 
-interface OrderItem {
-  name: string;
-  qty: number;
-  image: string;
-  price: number;
-  product: string | Product[];
-}
-
-interface PaymentResult {
-  id?: string;
-  status?: string;
-  update_time?: string;
-  email_address?: string;
+interface ShippingAddress {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
 }
 
 interface User {
   _id: string;
-  name: string;
   email: string;
+  name: string;
+}
+
+interface OrderItem {
+  _id: string;
+  image: string;
+  name: string;
+  price: number;
+  product: Product | string;
+  qty: number;
 }
 
 export default interface Order {
-  user: string | User;
-  orderItems: OrderItem[];
-  shippingAddress: ShippingAddress;
-  paymentMethod: string;
-  paymentResult?: PaymentResult;
-  itemsPrice: number;
-  taxPrice: number;
-  shippingPrice: number;
-  totalPrice: number;
-  isPaid: boolean;
-  paidAt?: Date;
+  __v: number;
+  _id: string;
+  createdAt: string;
+  deliveredAt?: string;
   isDelivered: boolean;
-  deliveredAt?: Date;
+  isPaid: boolean;
+  itemsPrice: number;
+  orderItems: OrderItem[];
+  paidAt?: string;
+  paymentMethod: string;
+  shippingAddress: ShippingAddress;
+  shippingPrice: number;
+  taxPrice: number;
+  totalPrice: number;
+  updatedAt: string;
+  user: User;
 }

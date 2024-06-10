@@ -58,6 +58,7 @@ const cartSlice = createSlice({
 
     clearCartItems: (cart) => {
       cart.orderItems = [];
+      cart.shippingAddress = null;
 
       cart = updateCart(cart);
       localStorage.setItem("cart", JSON.stringify(cart));

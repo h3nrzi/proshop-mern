@@ -1,15 +1,13 @@
 import { Col, Row } from "react-bootstrap";
 import { useGetProductsQuery } from "../api/products-api";
-import ProductCard from "../components/ProductCard";
 import Loader from "../components/Loader";
-import Message from "../components/Message";
+import ProductCard from "../components/ProductCard";
 
 const HomePage = () => {
   const { data: products, isLoading, error } = useGetProductsQuery();
 
   if (isLoading) return <Loader />;
-  // @ts-expect-error
-  if (error) return <Message variant="danger">{error.data?.message || error.error}</Message>;
+  if (error) return null;
   if (!products) return;
 
   return (

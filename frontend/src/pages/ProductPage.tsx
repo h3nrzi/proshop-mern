@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useGetProductQuery } from "../api/products-api";
 import { addToCart } from "../app/cart-slice";
 import Loader from "../components/Loader";
-import Message from "../components/Message";
 import Rating from "../components/Rating";
 
 const ProductPage = () => {
@@ -18,8 +17,7 @@ const ProductPage = () => {
   const dispatch = useDispatch();
 
   if (isLoading) return <Loader />;
-  // @ts-expect-error
-  if (error) return <Message variant="danger">{error.data?.message || error.error}</Message>;
+  if (error) return null;
   if (!product) return;
 
   const addToCartHandler = () => {

@@ -38,7 +38,7 @@ const LoginPage = () => {
       navigate(redirect);
     } catch (err) {
       // @ts-expect-error
-      toast.error(err.data.message || err.error);
+      toast.error(err.data.message || err.error, { position: "top-center" });
     }
   };
 
