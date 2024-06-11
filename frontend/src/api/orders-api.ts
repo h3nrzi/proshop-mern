@@ -1,6 +1,6 @@
 import { ORDER_URL, PAYPAL_URL } from "../constants";
 import Cart from "../entities/Cart";
-import Order, { PaymentResult } from "../entities/Order";
+import Order from "../entities/Order";
 import apiSlice from "./api-slice";
 
 export const orderApi = apiSlice.injectEndpoints({
@@ -18,7 +18,7 @@ export const orderApi = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5, // 5s
     }),
 
-    payOrder: builder.mutation<Order, { orderId: string; details: PaymentResult }>({
+    payOrder: builder.mutation<Order, { orderId: string; details: any }>({
       query: ({ orderId, details }) => ({
         url: ORDER_URL + "/" + orderId + "/pay",
         method: "PATCH",
@@ -28,7 +28,6 @@ export const orderApi = apiSlice.injectEndpoints({
 
     getPayPalClientId: builder.query<{ clientId: string }, void>({
       query: () => ({ url: PAYPAL_URL }),
-      keepUnusedDataFor: 5, // 5s
     }),
   }),
 });

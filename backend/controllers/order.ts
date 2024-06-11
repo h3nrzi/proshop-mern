@@ -1,7 +1,7 @@
-import { RequestHandler, Request } from "express";
+import { Request, RequestHandler } from "express";
 import CreateOrderDto from "../Dto/CreateOrderDto";
-import Order from "../models/order";
 import UpdateOrderToPaidDto from "../Dto/UpdateOrderToPaidDto";
+import Order from "../models/order";
 
 export interface CustomRequest extends Request {
   user?: any;
@@ -80,7 +80,7 @@ export const getMyOrders: RequestHandler = async (req: CustomRequest, res, next)
 // @route   PATCH /api/orders/:id/pay
 // @access  Private
 export const updateOrderToPaid: RequestHandler = async (req, res, next) => {
-  const { email_address, id, status, update_time } = req.body as UpdateOrderToPaidDto;
+  const { id, status, update_time, payer } = req.body as UpdateOrderToPaidDto;
 
   const order = await Order.findById(req.params.id);
   if (!order) {
@@ -88,12 +88,17 @@ export const updateOrderToPaid: RequestHandler = async (req, res, next) => {
     throw new Error("Order not found!");
   }
 
-  order!.isPaid = true;
-  order!.paidAt = Date.now();
-  order!.paymentResult = { id, email_address, status, update_time };
-  await order!.save();
+  order.isPaid = true;
+  order.paidAt = Date.now();
+  order.paymentResult = {
+    id,
+    status,
+    update_time,
+    payer: { ...payer, email_address: payer.email_address },
+  };
+  await order.save();
 
-  return res.status(200).json();
+  return res.status(200).json(order);
 };
 
 // @desc    Update order to delivered

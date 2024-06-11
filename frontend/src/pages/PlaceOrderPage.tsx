@@ -124,7 +124,6 @@ const PlaceOrderPage = () => {
               <ListGroup.Item className="text-center">
                 <Button
                   type="button"
-                  variant="success"
                   className="text-white px-5"
                   disabled={cart.orderItems.length === 0}
                   onClick={placeorderHandler}

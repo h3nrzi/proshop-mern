@@ -1,13 +1,16 @@
 import {
   DISPATCH_ACTION,
+  PayPalButtons,
+  PayPalButtonsComponentProps,
   SCRIPT_LOADING_STATE,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
 import moment from "moment";
 import { useEffect } from "react";
-import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   useGetOrderQuery,
   useGetPayPalClientIdQuery,
@@ -55,6 +58,42 @@ const OrderPage = () => {
   if (order.error) return null;
   if (!order.data) return null;
 
+  const onApprove: PayPalButtonsComponentProps["onApprove"] = (data, actions) => {
+    return actions.order!.capture().then(async (details) => {
+      try {
+        await payOrder({ orderId: orderId!, details });
+        order.refetch();
+        toast.success("Payment successful!", { position: "top-center" });
+      } catch (err: any) {
+        toast.error(err?.data?.message || err.message, {
+          position: "top-center",
+        });
+      }
+    });
+  };
+
+  const onApproveTest = async () => {
+    const details = { payer: { email_address: "rezaeig22@gmail.com" } };
+    await payOrder({ orderId: orderId!, details });
+    order.refetch();
+    toast.success("Payment successful!", { position: "top-center" });
+  };
+
+  const createOrder: PayPalButtonsComponentProps["createOrder"] = (data, actions) => {
+    return actions.order
+      .create({
+        intent: "CAPTURE",
+        purchase_units: [
+          { amount: { currency_code: "USD", value: order.data.totalPrice.toString() } },
+        ],
+      })
+      .then((orderId) => orderId);
+  };
+
+  const onError: PayPalButtonsComponentProps["onError"] = (err) => {
+    if (err instanceof Error) toast.error(err.message, { position: "top-center" });
+  };
+
   const {
     _id,
     isDelivered,
@@ -94,11 +133,14 @@ const OrderPage = () => {
                 {shippingAddress.country}
               </p>
               <p>
-                <strong className="me-1">Order At:</strong>
+                <strong className="me-1">Order at:</strong>
                 {moment(createdAt).format("dddd, MMMM Do YYYY, h:mm a")}
               </p>
               {isDelivered ? (
-                <Message variant="success">Delivered on {deliveredAt!}</Message>
+                <Message variant="success">
+                  Delivered on
+                  {moment(deliveredAt!).format("dddd, MMMM Do YYYY, h:mm a")}
+                </Message>
               ) : (
                 <Message variant="danger">Not Delivered!</Message>
               )}
@@ -108,7 +150,9 @@ const OrderPage = () => {
               <h2>Payment Method</h2>
               <p>{paymentMethod}</p>
               {isPaid ? (
-                <Message variant="success">Paid on {paidAt!}</Message>
+                <Message variant="success">
+                  Paid on: {moment(paidAt!).format("dddd, MMMM Do YYYY, h:mm a")}
+                </Message>
               ) : (
                 <Message variant="danger">Not Paid!</Message>
               )}
@@ -174,7 +218,30 @@ const OrderPage = () => {
                 </Row>
               </ListGroup.Item>
 
-              {/* PAY ORDER PLACEHOLDER */}
+              {!isPaid && (
+                <ListGroup.Item className="text-center">
+                  {isPending ? (
+                    <Loader />
+                  ) : (
+                    <div>
+                      <Button
+                        variant="success"
+                        className="text-white px-5 mb-2"
+                        onClick={onApproveTest}
+                      >
+                        Test Pay Order
+                        {payOrderLoading && <Spinner size="sm" className="ms-2" />}
+                      </Button>
+
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      />
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
               {/* MARK AS DELIVERED PLACEHOLDER */}
             </ListGroup>
           </Card>

@@ -16,10 +16,10 @@ interface ShippingAddress {
 }
 
 interface PaymentResult {
-  id?: string;
-  status?: string;
-  update_time?: string;
-  email_address?: string;
+  id: string;
+  status: string;
+  update_time: string;
+  payer: { email_address: string };
 }
 
 interface IOrder extends Document {
@@ -64,7 +64,7 @@ const orderSchema = new Schema<IOrder>(
       id: { type: String },
       status: { type: String },
       update_time: { type: String },
-      email_address: { type: String },
+      payer: { email_address: { type: String } },
     },
 
     itemsPrice: { type: Number, required: true, default: 0.0 },

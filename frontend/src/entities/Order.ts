@@ -1,10 +1,23 @@
 import Product from "./Product";
 
 export interface PaymentResult {
+  email_address?: string;
   id?: string;
+  payer: {
+    email_address?: string;
+    payer_id?: string;
+    name?: {
+      prefix?: string;
+      given_name?: string;
+      surname?: string;
+      middle_name?: string;
+      suffix?: string;
+      alternate_full_name?: string;
+      full_name?: string;
+    };
+  };
   status?: string;
   update_time?: string;
-  email_address?: string;
 }
 
 interface ShippingAddress {
