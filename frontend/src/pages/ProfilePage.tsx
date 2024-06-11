@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { RootState } from "../app/store";
 import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
-import { useUpdateProfileMutation } from "../api/users-api";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useUpdateProfileMutation } from "../api/users-api";
 import { setCredentials } from "../app/auth-slice";
+import { RootState } from "../app/store";
 
 const ProfilePage = () => {
   const {
