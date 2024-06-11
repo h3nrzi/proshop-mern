@@ -1,21 +1,80 @@
+import {
+  DISPATCH_ACTION,
+  SCRIPT_LOADING_STATE,
+  usePayPalScriptReducer,
+} from "@paypal/react-paypal-js";
 import moment from "moment";
+import { useEffect } from "react";
 import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { useGetOrderDetailsQuery } from "../api/orders-api";
+import {
+  useGetOrderQuery,
+  useGetPayPalClientIdQuery,
+  usePayOrderMutation,
+} from "../api/orders-api";
+import { RootState } from "../app/store";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-  const { data: order, isLoading, error } = useGetOrderDetailsQuery(orderId!);
 
-  if (isLoading) return <Loader />;
-  if (error) return null;
-  if (!order) return;
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+
+  const order = useGetOrderQuery(orderId!);
+  const paypalClientId = useGetPayPalClientIdQuery();
+  const [payOrder, { isLoading: payOrderLoading }] = usePayOrderMutation();
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  useEffect(() => {
+    if (!paypalClientId.error && !paypalClientId.isLoading && paypalClientId.data?.clientId) {
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: DISPATCH_ACTION.RESET_OPTIONS,
+          value: { clientId: paypalClientId.data?.clientId, currency: "USD" },
+        });
+
+        paypalDispatch({
+          type: DISPATCH_ACTION.LOADING_STATUS,
+          value: SCRIPT_LOADING_STATE.PENDING,
+        });
+      };
+
+      if (order && !order.data?.isPaid) if (!window.paypal) loadPaypalScript();
+    }
+  }, [
+    order,
+    paypalClientId.data?.clientId,
+    paypalClientId.error,
+    paypalClientId.isLoading,
+    paypalDispatch,
+  ]);
+
+  if (order.isLoading) return <Loader />;
+  if (order.error) return null;
+  if (!order.data) return null;
+
+  const {
+    _id,
+    isDelivered,
+    createdAt,
+    isPaid,
+    itemsPrice,
+    orderItems,
+    paymentMethod,
+    shippingAddress,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+    user,
+    deliveredAt,
+    paidAt,
+  } = order.data;
 
   return (
     <>
-      <h1>Order {order._id}</h1>
+      <h1>Order {_id}</h1>
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
@@ -23,23 +82,23 @@ const OrderPage = () => {
               <h2>Shipping</h2>
               <p>
                 <strong className="me-1">Name:</strong>
-                {order.user.name}
+                {user.name}
               </p>
               <p>
                 <strong className="me-1">Email:</strong>
-                {order.user.email}
+                {user.email}
               </p>
               <p>
                 <strong className="me-1">Address:</strong>
-                {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
-                {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+                {shippingAddress.address}, {shippingAddress.city},{shippingAddress.postalCode},{" "}
+                {shippingAddress.country}
               </p>
               <p>
                 <strong className="me-1">Order At:</strong>
-                {moment(order.createdAt).format("dddd, MMMM Do YYYY, h:mm a")}
+                {moment(createdAt).format("dddd, MMMM Do YYYY, h:mm a")}
               </p>
-              {order.isDelivered ? (
-                <Message variant="success">Delivered on {order.deliveredAt!}</Message>
+              {isDelivered ? (
+                <Message variant="success">Delivered on {deliveredAt!}</Message>
               ) : (
                 <Message variant="danger">Not Delivered!</Message>
               )}
@@ -47,9 +106,9 @@ const OrderPage = () => {
 
             <ListGroup.Item>
               <h2>Payment Method</h2>
-              <p>{order.paymentMethod}</p>
-              {order.isPaid ? (
-                <Message variant="success">Paid on {order.paidAt!}</Message>
+              <p>{paymentMethod}</p>
+              {isPaid ? (
+                <Message variant="success">Paid on {paidAt!}</Message>
               ) : (
                 <Message variant="danger">Not Paid!</Message>
               )}
@@ -57,7 +116,7 @@ const OrderPage = () => {
 
             <ListGroup.Item>
               <h2>Order Items</h2>
-              {order.orderItems.map((item) => (
+              {orderItems.map((item) => (
                 <ListGroup key={item._id}>
                   <Row className="align-align-items-center">
                     <Col md={1} className="my-1">
@@ -90,28 +149,28 @@ const OrderPage = () => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items Price:</Col>
-                  <Col>${order.itemsPrice}</Col>
+                  <Col>${itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping Price:</Col>
-                  <Col>${order.shippingPrice}</Col>
+                  <Col>${shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Tax Price:</Col>
-                  <Col>${order.taxPrice}</Col>
+                  <Col>${taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total Price:</Col>
-                  <Col>${order.totalPrice}</Col>
+                  <Col>${totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
 

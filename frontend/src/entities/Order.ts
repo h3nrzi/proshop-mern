@@ -1,5 +1,12 @@
 import Product from "./Product";
 
+export interface PaymentResult {
+  id?: string;
+  status?: string;
+  update_time?: string;
+  email_address?: string;
+}
+
 interface ShippingAddress {
   address: string;
   city: string;
@@ -33,6 +40,7 @@ export default interface Order {
   orderItems: OrderItem[];
   paidAt?: string;
   paymentMethod: string;
+  paymentResult?: PaymentResult;
   shippingAddress: ShippingAddress;
   shippingPrice: number;
   taxPrice: number;
