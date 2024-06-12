@@ -14,25 +14,39 @@ import {
   useGetOrderQuery,
   useGetPayPalClientIdQuery,
   useUpdateOrderToPaidMutation,
+  useUpdateOrderToDeliverMutation,
 } from "../api/orders-api";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-
-  const order = useGetOrderQuery(orderId!);
-  const paypalClientId = useGetPayPalClientIdQuery();
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+  const {
+    data: order,
+    isLoading: orderLoading,
+    error: orderError,
+    refetch: orderRefetch,
+  } = useGetOrderQuery(orderId!);
+  const {
+    data: paypal,
+    isLoading: paypalLoading,
+    error: paypalError,
+  } = useGetPayPalClientIdQuery();
   const [UpdateOrderToPaidMutation, { isLoading: UpdateOrderToPaidLoading }] =
     useUpdateOrderToPaidMutation();
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+  const [updateOrderToDeliverMutation, { isLoading: UpdateOrderToDeliverLoading }] =
+    useUpdateOrderToDeliverMutation();
 
   useEffect(() => {
-    if (!paypalClientId.error && !paypalClientId.isLoading && paypalClientId.data?.clientId) {
+    if (!paypalError && !paypalLoading && paypal?.clientId) {
       const loadPaypalScript = async () => {
         paypalDispatch({
           type: DISPATCH_ACTION.RESET_OPTIONS,
-          value: { clientId: paypalClientId.data?.clientId, currency: "USD" },
+          value: { clientId: paypal.clientId, currency: "USD" },
         });
 
         paypalDispatch({
@@ -41,25 +55,15 @@ const OrderPage = () => {
         });
       };
 
-      if (order && !order.data?.isPaid) if (!window.paypal) loadPaypalScript();
+      if (order && !order.isPaid) if (!window.paypal) loadPaypalScript();
     }
-  }, [
-    order,
-    paypalClientId.data?.clientId,
-    paypalClientId.error,
-    paypalClientId.isLoading,
-    paypalDispatch,
-  ]);
-
-  if (order.isLoading) return <Loader />;
-  if (order.error) return null;
-  if (!order.data) return null;
+  }, [order, paypal?.clientId, paypalError, paypalLoading, paypalDispatch]);
 
   const onApprove: PayPalButtonsComponentProps["onApprove"] = (data, actions) => {
     return actions.order!.capture().then(async (details) => {
       try {
         await UpdateOrderToPaidMutation({ orderId: orderId!, details });
-        order.refetch();
+        orderRefetch();
         toast.success("Payment successful!", { position: "top-center" });
       } catch (err: any) {
         toast.error(err?.data?.message || err.message, {
@@ -72,7 +76,7 @@ const OrderPage = () => {
   const onApproveTest = async () => {
     const details = { payer: { email_address: "rezaeig22@gmail.com" } };
     await UpdateOrderToPaidMutation({ orderId: orderId!, details });
-    order.refetch();
+    orderRefetch();
     toast.success("Payment successful!", { position: "top-center" });
   };
 
@@ -81,7 +85,12 @@ const OrderPage = () => {
       .create({
         intent: "CAPTURE",
         purchase_units: [
-          { amount: { currency_code: "USD", value: order.data.totalPrice.toString() } },
+          {
+            amount: {
+              currency_code: "USD",
+              value: order!.totalPrice.toString(),
+            },
+          },
         ],
       })
       .then((orderId) => orderId);
@@ -91,21 +100,9 @@ const OrderPage = () => {
     if (err instanceof Error) toast.error(err.message, { position: "top-center" });
   };
 
-  const {
-    isDelivered,
-    createdAt,
-    isPaid,
-    itemsPrice,
-    orderItems,
-    paymentMethod,
-    shippingAddress,
-    shippingPrice,
-    taxPrice,
-    totalPrice,
-    user,
-    deliveredAt,
-    paidAt,
-  } = order.data;
+  if (orderLoading) return <Loader />;
+  if (orderError) return;
+  if (!order) return;
 
   return (
     <>
@@ -213,6 +210,7 @@ const OrderPage = () => {
                 </Row>
               </ListGroup.Item>
 
+              {/* MARK AS PAID */}
               {!isPaid && (
                 <ListGroup.Item className="text-center">
                   {isPending ? (
@@ -237,7 +235,9 @@ const OrderPage = () => {
                   )}
                 </ListGroup.Item>
               )}
-              {/* MARK AS DELIVERED PLACEHOLDER */}
+
+              {/* MARK AS DELIVERED */}
+              {/* {userInfo && userInfo.isAdmin && isPaid &&} */}
             </ListGroup>
           </Card>
         </Col>

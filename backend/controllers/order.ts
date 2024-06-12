@@ -106,5 +106,16 @@ export const updateOrderToPaid: RequestHandler = async (req, res, next) => {
 // @route   PATCH /api/orders/:id/deliver
 // @access  Private -> Admin
 export const updateOrderToDeliver: RequestHandler = async (req, res, next) => {
-  res.status(200).send("update order to delivered");
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  order.isDelivered = true;
+  order.deliveredAt = Date.now();
+  const updatedOrder = await order.save();
+
+  res.status(200).send(updatedOrder);
 };
