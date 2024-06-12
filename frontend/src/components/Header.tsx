@@ -39,6 +39,38 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+              {/* ADMIN */}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title={"Admin"} id="adminmenu">
+                  <Link to="/admin/product-list" className="text-decoration-none">
+                    <NavDropdown.Item as="span">Products</NavDropdown.Item>
+                  </Link>
+                  <Link to="/admin/user-list" className="text-decoration-none">
+                    <NavDropdown.Item as="span">Users</NavDropdown.Item>
+                  </Link>
+                  <Link to="/admin/order-list" className="text-decoration-none">
+                    <NavDropdown.Item as="span">Orders</NavDropdown.Item>
+                  </Link>
+                </NavDropdown>
+              )}
+
+              {/* PROFILE */}
+              {userInfo ? (
+                <NavDropdown title={userInfo.name} id="username" className="mx-md-4">
+                  <Link to="/profile" className="text-decoration-none">
+                    <NavDropdown.Item as="span">Profile</NavDropdown.Item>
+                  </Link>
+                  <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <Link to="/login" className="text-decoration-none mx-md-5">
+                  <Nav.Link as="span">
+                    <FaUser /> Sign In
+                  </Nav.Link>
+                </Link>
+              )}
+
+              {/* CART */}
               <Link to="/cart" className="text-decoration-none">
                 <Nav.Link as="span">
                   <FaShoppingCart size="20px" /> Cart
@@ -49,22 +81,6 @@ const Header = () => {
                   )}
                 </Nav.Link>
               </Link>
-
-              {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username" className="mx-md-5">
-                  <Link to="/profile" className="text-decoration-none">
-                    <NavDropdown.Item as="span">Profile</NavDropdown.Item>
-                  </Link>
-
-                  <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <Link to="/login" className="text-decoration-none mx-md-5">
-                  <Nav.Link as="span">
-                    <FaUser /> Sign In
-                  </Nav.Link>
-                </Link>
-              )}
             </Nav>
           </Navbar.Collapse>
         </Container>
