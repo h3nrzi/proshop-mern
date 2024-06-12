@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import {
   useGetOrderQuery,
   useGetPayPalClientIdQuery,
-  usePayOrderMutation,
+  useUpdateOrderToPaidMutation,
 } from "../api/orders-api";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -23,7 +23,8 @@ const OrderPage = () => {
 
   const order = useGetOrderQuery(orderId!);
   const paypalClientId = useGetPayPalClientIdQuery();
-  const [payOrder, { isLoading: payOrderLoading }] = usePayOrderMutation();
+  const [UpdateOrderToPaidMutation, { isLoading: UpdateOrderToPaidLoading }] =
+    useUpdateOrderToPaidMutation();
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const OrderPage = () => {
   const onApprove: PayPalButtonsComponentProps["onApprove"] = (data, actions) => {
     return actions.order!.capture().then(async (details) => {
       try {
-        await payOrder({ orderId: orderId!, details });
+        await UpdateOrderToPaidMutation({ orderId: orderId!, details });
         order.refetch();
         toast.success("Payment successful!", { position: "top-center" });
       } catch (err: any) {
@@ -70,7 +71,7 @@ const OrderPage = () => {
 
   const onApproveTest = async () => {
     const details = { payer: { email_address: "rezaeig22@gmail.com" } };
-    await payOrder({ orderId: orderId!, details });
+    await UpdateOrderToPaidMutation({ orderId: orderId!, details });
     order.refetch();
     toast.success("Payment successful!", { position: "top-center" });
   };
@@ -224,7 +225,7 @@ const OrderPage = () => {
                         onClick={onApproveTest}
                       >
                         Test Pay Order
-                        {payOrderLoading && <Spinner size="sm" className="ms-2" />}
+                        {UpdateOrderToPaidLoading && <Spinner size="sm" className="ms-2" />}
                       </Button>
 
                       <PayPalButtons
