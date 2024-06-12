@@ -12,12 +12,12 @@ const Header = () => {
   const orderItems = useSelector((state: RootState) => state.cart.orderItems);
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const dispatch = useDispatch();
-  const [logoutApiCall] = useLogoutMutation();
+  const [logoutMutation] = useLogoutMutation();
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
     try {
-      await logoutApiCall().unwrap();
+      await logoutMutation().unwrap();
       dispatch(clearCredentials());
       toast.success("logged out successfully!", { position: "top-center" });
       navigate("/");
