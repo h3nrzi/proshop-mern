@@ -73,7 +73,7 @@ export const createOrder: RequestHandler = async (req: CustomRequest, res, next)
 export const getMyOrders: RequestHandler = async (req: CustomRequest, res, next) => {
   const orders = await Order.find({ user: req.user._id });
 
-  res.status(200).json(orders);
+  res.status(200).send(orders);
 };
 
 // @desc    Update order to paid

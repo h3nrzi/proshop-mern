@@ -8,7 +8,6 @@ import {
 import moment from "moment";
 import { useEffect } from "react";
 import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
-import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -16,14 +15,11 @@ import {
   useGetPayPalClientIdQuery,
   usePayOrderMutation,
 } from "../api/orders-api";
-import { RootState } from "../app/store";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
-
-  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
 
   const order = useGetOrderQuery(orderId!);
   const paypalClientId = useGetPayPalClientIdQuery();
@@ -95,7 +91,6 @@ const OrderPage = () => {
   };
 
   const {
-    _id,
     isDelivered,
     createdAt,
     isPaid,
@@ -113,7 +108,6 @@ const OrderPage = () => {
 
   return (
     <>
-      <h1>Order {_id}</h1>
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">

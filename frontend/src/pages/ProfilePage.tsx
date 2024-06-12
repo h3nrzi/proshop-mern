@@ -1,11 +1,17 @@
+import _ from "lodash";
+import moment from "moment";
 import { useEffect } from "react";
-import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { FaTimes, FaTrash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useGetMyOrdersQuery } from "../api/orders-api";
 import { useUpdateProfileMutation } from "../api/users-api";
 import { setCredentials } from "../app/auth-slice";
 import { RootState } from "../app/store";
+import Loader from "../components/Loader";
 
 const ProfilePage = () => {
   const {
@@ -17,6 +23,7 @@ const ProfilePage = () => {
   const dispatch = useDispatch();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const [updateProfileMutation, { isLoading: updateProfileLoading }] = useUpdateProfileMutation();
+  const { data: orders, isLoading: myOrdersLoading, error: myOrdersError } = useGetMyOrdersQuery();
 
   useEffect(() => {
     if (userInfo) {
@@ -46,10 +53,12 @@ const ProfilePage = () => {
     }
   };
 
+  if (myOrdersError) return null;
+
   return (
     <Row>
       <Col md={3}>
-        <h2>User Profile</h2>
+        <h2 className="text-center mb-5">User Profile</h2>
         <Form onSubmit={handleSubmit(submitHandler)}>
           <Form.Group controlId="name" className="my-3">
             <Form.Label>Name</Form.Label>
@@ -96,7 +105,71 @@ const ProfilePage = () => {
         </Form>
       </Col>
 
-      <Col md={9}>column</Col>
+      <Col md={9}>
+        <h2 className="text-center mb-5">My Orders</h2>
+        {myOrdersLoading ? (
+          <Loader />
+        ) : (
+          <Table striped responsive className="table-sm">
+            <thead>
+              <tr>
+                <td className="fw-bold">ID</td>
+
+                <td className="fw-bold">DATE</td>
+
+                <td className="fw-bold">TOTAL</td>
+
+                <td className="fw-bold">PAID</td>
+
+                <td className="fw-bold">DELIVERED</td>
+
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              {orders?.map((order) => (
+                <tr key={order._id}>
+                  <td>
+                    <Link to={`/order/${order._id}`}>
+                      {_.takeRight(order._id.split(""), 4).join("")}
+                    </Link>
+                  </td>
+
+                  <td>{moment(order.createdAt).format("MMMM Do YYYY")}</td>
+
+                  <td>${order.totalPrice}</td>
+
+                  <td>
+                    {order.isPaid ? moment(order.paidAt).format("MMMM Do YYYY") : <FaTimes />}
+                  </td>
+
+                  <td>
+                    {order.isDelivered ? (
+                      moment(order.deliveredAt).format("MMMM Do YYYY")
+                    ) : (
+                      <FaTimes />
+                    )}
+                  </td>
+
+                  <td>
+                    {!order.isPaid && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="danger"
+                        className="text-white"
+                        onClick={() => {}}
+                      >
+                        <FaTrash size="15px" />
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Col>
     </Row>
   );
 };
