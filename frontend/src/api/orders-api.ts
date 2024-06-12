@@ -7,22 +7,22 @@ export const orderApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getOrders: builder.query<Order[], void>({
       query: () => ({ url: ORDER_URL }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 1,
     }),
 
     getOrder: builder.query<Order, string>({
       query: (orderId: string) => ({ url: ORDER_URL + "/" + orderId }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 1,
     }),
 
     getPayPalClientId: builder.query<{ clientId: string }, void>({
       query: () => ({ url: PAYPAL_URL }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 1,
     }),
 
     getMyOrders: builder.query<Order[], void>({
       query: () => ({ url: ORDER_URL + "/myorders" }),
-      keepUnusedDataFor: 5,
+      keepUnusedDataFor: 1,
     }),
 
     createOrder: builder.mutation<Order, Cart>({

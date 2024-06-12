@@ -1,9 +1,8 @@
 import _ from "lodash";
-import moment from "moment";
 import { useEffect } from "react";
 import { Button, Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { FaTimes, FaTrash } from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -129,29 +128,19 @@ const ProfilePage = () => {
                       {_.takeRight(order._id.split(""), 4).join("")}
                     </Link>
                   </td>
-                  <td>{moment(order.createdAt).format("MMMM Do YYYY")}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
                   <td>${order.totalPrice}</td>
+                  <td>{order.isPaid ? order.paidAt?.substring(0, 10) : <FaTimes />}</td>
+                  <td>{order.isDelivered ? order.deliveredAt?.substring(0, 10) : <FaTimes />}</td>
                   <td>
-                    {order.isPaid ? moment(order.paidAt).format("MMMM Do YYYY") : <FaTimes />}
-                  </td>
-                  <td>
-                    {order.isDelivered ? (
-                      moment(order.deliveredAt).format("MMMM Do YYYY")
+                    {order.isPaid && order.isDelivered ? (
+                      <FaCheck color="green" />
                     ) : (
-                      <FaTimes />
-                    )}
-                  </td>
-                  <td>
-                    {!order.isPaid && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="danger"
-                        className="text-white"
-                        onClick={() => {}}
-                      >
-                        <FaTrash size="15px" />
-                      </Button>
+                      <Link to={`/order/${order._id}`}>
+                        <Button size="sm" as="span" variant="secondary">
+                          Details
+                        </Button>
+                      </Link>
                     )}
                   </td>
                 </tr>

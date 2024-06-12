@@ -8,7 +8,7 @@ import {
 import moment from "moment";
 import { useEffect } from "react";
 import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useGetOrderQuery,
@@ -23,6 +23,7 @@ import { RootState } from "../app/store";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
+  const navigate = useNavigate();
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const {
     data: order,
@@ -35,10 +36,10 @@ const OrderPage = () => {
     isLoading: paypalLoading,
     error: paypalError,
   } = useGetPayPalClientIdQuery();
-  const [UpdateOrderToPaidMutation, { isLoading: UpdateOrderToPaidLoading }] =
+  const [updateOrderToPaidMutation, { isLoading: updateOrderToPaidLoading }] =
     useUpdateOrderToPaidMutation();
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-  const [updateOrderToDeliverMutation, { isLoading: UpdateOrderToDeliverLoading }] =
+  const [updateOrderToDeliverMutation, { isLoading: updateOrderToDeliverLoading }] =
     useUpdateOrderToDeliverMutation();
 
   useEffect(() => {
@@ -62,22 +63,28 @@ const OrderPage = () => {
   const onApprove: PayPalButtonsComponentProps["onApprove"] = (data, actions) => {
     return actions.order!.capture().then(async (details) => {
       try {
-        await UpdateOrderToPaidMutation({ orderId: orderId!, details });
+        await updateOrderToPaidMutation({ orderId: orderId!, details });
         orderRefetch();
-        toast.success("Payment successful!", { position: "top-center" });
-      } catch (err: any) {
-        toast.error(err?.data?.message || err.message, {
+        toast.success("Payment successful!", {
+          onClick: () => navigate("/profile"),
           position: "top-center",
+          style: { cursor: "pointer" },
         });
+      } catch (err: any) {
+        toast.error(err?.data?.message || err.error, { position: "top-center" });
       }
     });
   };
 
   const onApproveTest = async () => {
     const details = { payer: { email_address: "rezaeig22@gmail.com" } };
-    await UpdateOrderToPaidMutation({ orderId: orderId!, details });
+    await updateOrderToPaidMutation({ orderId: orderId!, details });
     orderRefetch();
-    toast.success("Payment successful!", { position: "top-center" });
+    toast.success("Payment successful!", {
+      onClick: () => navigate("/profile"),
+      position: "top-center",
+      style: { cursor: "pointer" },
+    });
   };
 
   const createOrder: PayPalButtonsComponentProps["createOrder"] = (data, actions) => {
@@ -96,6 +103,20 @@ const OrderPage = () => {
       .then((orderId) => orderId);
   };
 
+  const deliverOrderHandler = async () => {
+    try {
+      await updateOrderToDeliverMutation(orderId!);
+      orderRefetch();
+      toast.success("Order has been delivered", {
+        onClick: () => navigate("/admin/order-list"),
+        position: "top-center",
+        style: { cursor: "pointer" },
+      });
+    } catch (err: any) {
+      toast.error(err?.data?.message || err.error, { position: "top-center" });
+    }
+  };
+
   const onError: PayPalButtonsComponentProps["onError"] = (err) => {
     if (err instanceof Error) toast.error(err.message, { position: "top-center" });
   };
@@ -107,62 +128,58 @@ const OrderPage = () => {
   return (
     <>
       <Row>
+        {/* LEFT */}
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
                 <strong className="me-1">Name:</strong>
-                {user.name}
+                {order.user.name}
               </p>
               <p>
                 <strong className="me-1">Email:</strong>
-                {user.email}
+                {order.user.email}
               </p>
               <p>
                 <strong className="me-1">Address:</strong>
-                {shippingAddress.address}, {shippingAddress.city},{shippingAddress.postalCode},{" "}
-                {shippingAddress.country}
+                {order.shippingAddress.address}, {order.shippingAddress.city},
+                {order.shippingAddress.postalCode}, {order.shippingAddress.country}
               </p>
               <p>
                 <strong className="me-1">Order at:</strong>
-                {moment(createdAt).format("dddd, MMMM Do YYYY, h:mm a")}
+                {moment(order.createdAt).format("dddd - MMMM Do YYYY - h:mm a")}
               </p>
-              {isDelivered ? (
+              {order.isDelivered ? (
                 <Message variant="success">
-                  Delivered on
-                  {moment(deliveredAt!).format("dddd, MMMM Do YYYY, h:mm a")}
+                  Delivered on: {moment(order.deliveredAt!).format("dddd - MMMM Do YYYY - h:mm a")}
                 </Message>
               ) : (
                 <Message variant="danger">Not Delivered!</Message>
               )}
             </ListGroup.Item>
-
             <ListGroup.Item>
               <h2>Payment Method</h2>
-              <p>{paymentMethod}</p>
-              {isPaid ? (
+              <p>{order.paymentMethod}</p>
+              {order.isPaid ? (
                 <Message variant="success">
-                  Paid on: {moment(paidAt!).format("dddd, MMMM Do YYYY, h:mm a")}
+                  Paid on: {moment(order.paidAt!).format("dddd - MMMM Do YYYY - h:mm a")}
                 </Message>
               ) : (
                 <Message variant="danger">Not Paid!</Message>
               )}
             </ListGroup.Item>
-
             <ListGroup.Item>
               <h2>Order Items</h2>
-              {orderItems.map((item) => (
+              {order.orderItems.map((item) => (
                 <ListGroup key={item._id}>
                   <Row className="align-align-items-center">
                     <Col md={1} className="my-1">
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
-
                     <Col className="my-1">
                       <Link to={`/product/${item.product}`}>{item.name}</Link>
                     </Col>
-
                     <Col md={4}>
                       <p className="fw-bold">
                         {item.qty} X ${item.price} = ${item.qty * item.price}
@@ -175,43 +192,40 @@ const OrderPage = () => {
           </ListGroup>
         </Col>
 
+        {/* RIGHT */}
         <Col md={4}>
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h2>Order Summary</h2>
               </ListGroup.Item>
-
               <ListGroup.Item>
                 <Row>
                   <Col>Items Price:</Col>
-                  <Col>${itemsPrice}</Col>
+                  <Col>${order.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
-
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping Price:</Col>
-                  <Col>${shippingPrice}</Col>
+                  <Col>${order.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
-
               <ListGroup.Item>
                 <Row>
                   <Col>Tax Price:</Col>
-                  <Col>${taxPrice}</Col>
+                  <Col>${order.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
-
               <ListGroup.Item>
                 <Row>
                   <Col>Total Price:</Col>
-                  <Col>${totalPrice}</Col>
+                  <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               {/* MARK AS PAID */}
-              {!isPaid && (
+              {!order?.isPaid && (
                 <ListGroup.Item className="text-center">
                   {isPending ? (
                     <Loader />
@@ -223,9 +237,8 @@ const OrderPage = () => {
                         onClick={onApproveTest}
                       >
                         Test Pay Order
-                        {UpdateOrderToPaidLoading && <Spinner size="sm" className="ms-2" />}
+                        {updateOrderToPaidLoading && <Spinner size="sm" className="ms-2" />}
                       </Button>
-
                       <PayPalButtons
                         createOrder={createOrder}
                         onApprove={onApprove}
@@ -237,7 +250,18 @@ const OrderPage = () => {
               )}
 
               {/* MARK AS DELIVERED */}
-              {/* {userInfo && userInfo.isAdmin && isPaid &&} */}
+              {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                <ListGroup.Item className="text-center">
+                  <Button
+                    type="button"
+                    className="btn text-white px-5"
+                    variant="success"
+                    onClick={deliverOrderHandler}
+                  >
+                    Mark as Delivered
+                  </Button>
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>

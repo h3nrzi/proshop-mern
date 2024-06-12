@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { Button, Table } from "react-bootstrap";
-import { FaTimes, FaTrash } from "react-icons/fa";
+import { FaTimes, FaCheck } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetOrdersQuery } from "../api/orders-api";
 import Loader from "../components/Loader";
@@ -33,7 +33,9 @@ const AdminOrderListPage = () => {
               orders.map((order) => (
                 <tr key={order._id}>
                   <td>
-                    {<Link to={`/order/${order._id}`}>{_.takeRight(order._id.split(""), 4)}</Link>}
+                    <Link to={`/order/${order._id}`}>
+                      {_.takeRight(order._id.split(""), 4).join("")}
+                    </Link>
                   </td>
                   <td>{order.user.name}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
@@ -41,15 +43,15 @@ const AdminOrderListPage = () => {
                   <td>{order.isPaid ? order.paidAt?.substring(0, 10) : <FaTimes />}</td>
                   <td>{order.isDelivered ? order.deliveredAt?.substring(0, 10) : <FaTimes />}</td>
                   <td>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="danger"
-                      className="text-white"
-                      onClick={() => {}}
-                    >
-                      <FaTrash size="15px" />
-                    </Button>
+                    {order.isPaid && order.isDelivered ? (
+                      <FaCheck color="green" />
+                    ) : (
+                      <Link to={`/order/${order._id}`}>
+                        <Button size="sm" as="span" variant="secondary">
+                          Details
+                        </Button>
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}
