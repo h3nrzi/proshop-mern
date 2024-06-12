@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
-import PrivateRoute from "./components/PrivateRoute";
+import AdminLayout from "./layout/AdminLayout";
+import AppLayout from "./layout/AppLayout";
+import PrivateLayout from "./layout/PrivateLayout";
+import AdminOrderListPage from "./pages/AdminOrderListPage";
 import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -8,14 +10,14 @@ import OrderPage from "./pages/OrderPage";
 import PaymentPage from "./pages/PaymentPage";
 import PlaceOrderPage from "./pages/PlaceOrderPage";
 import ProductPage from "./pages/ProductPage";
+import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import ShippingPage from "./pages/ShippingPage";
-import ProfilePage from "./pages/ProfilePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <AppLayout />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "product/:id", element: <ProductPage /> },
@@ -24,13 +26,18 @@ const router = createBrowserRouter([
       { path: "register", element: <RegisterPage /> },
       {
         path: "",
-        element: <PrivateRoute />,
+        element: <PrivateLayout />,
         children: [
           { path: "shipping", element: <ShippingPage /> },
           { path: "payment", element: <PaymentPage /> },
           { path: "placeorder", element: <PlaceOrderPage /> },
           { path: "order/:id", element: <OrderPage /> },
           { path: "profile", element: <ProfilePage /> },
+          {
+            path: "admin",
+            element: <AdminLayout />,
+            children: [{ path: "order-list", element: <AdminOrderListPage /> }],
+          },
         ],
       },
     ],

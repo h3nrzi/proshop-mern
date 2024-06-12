@@ -1,11 +1,11 @@
 import { Container } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 
-const App = () => {
+const AppLayout = () => {
   return (
     <>
       <Header />
@@ -20,4 +20,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppLayout;
