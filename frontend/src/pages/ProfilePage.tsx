@@ -58,7 +58,7 @@ const ProfilePage = () => {
   return (
     <Row>
       <Col md={3}>
-        <h2 className="text-center mb-5">User Profile</h2>
+        <h2 className="text-center mb-5 bg-primary text-white rounded-1">Profile</h2>
         <Form onSubmit={handleSubmit(submitHandler)}>
           <Form.Group controlId="name" className="my-3">
             <Form.Label>Name</Form.Label>
@@ -106,24 +106,19 @@ const ProfilePage = () => {
       </Col>
 
       <Col md={9}>
-        <h2 className="text-center mb-5">My Orders</h2>
+        <h2 className="text-center mb-5 bg-secondary text-white rounded-1">Orders</h2>
         {myOrdersLoading ? (
           <Loader />
         ) : (
-          <Table striped responsive className="table-sm">
+          <Table striped responsive bordered className="table-sm mt-3">
             <thead>
               <tr>
-                <td className="fw-bold">ID</td>
-
-                <td className="fw-bold">DATE</td>
-
-                <td className="fw-bold">TOTAL</td>
-
-                <td className="fw-bold">PAID</td>
-
-                <td className="fw-bold">DELIVERED</td>
-
-                <td></td>
+                <th>ID</th>
+                <th>DATE</th>
+                <th>TOTAL PRICE</th>
+                <th>PAID</th>
+                <th>DELIVERED</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -134,15 +129,11 @@ const ProfilePage = () => {
                       {_.takeRight(order._id.split(""), 4).join("")}
                     </Link>
                   </td>
-
                   <td>{moment(order.createdAt).format("MMMM Do YYYY")}</td>
-
                   <td>${order.totalPrice}</td>
-
                   <td>
                     {order.isPaid ? moment(order.paidAt).format("MMMM Do YYYY") : <FaTimes />}
                   </td>
-
                   <td>
                     {order.isDelivered ? (
                       moment(order.deliveredAt).format("MMMM Do YYYY")
@@ -150,7 +141,6 @@ const ProfilePage = () => {
                       <FaTimes />
                     )}
                   </td>
-
                   <td>
                     {!order.isPaid && (
                       <Button

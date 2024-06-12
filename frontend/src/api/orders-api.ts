@@ -5,7 +5,7 @@ import apiSlice from "./api-slice";
 
 export const orderApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getOrders: builder.query<Order, void>({
+    getOrders: builder.query<Order[], void>({
       query: () => ({ url: ORDER_URL }),
       keepUnusedDataFor: 5,
     }),
@@ -45,8 +45,9 @@ export const orderApi = apiSlice.injectEndpoints({
 
 export const {
   useCreateOrderMutation,
-  useGetOrderQuery,
-  useUpdateOrderToPaidMutation,
-  useGetPayPalClientIdQuery,
   useGetMyOrdersQuery,
+  useGetOrderQuery,
+  useGetOrdersQuery,
+  useGetPayPalClientIdQuery,
+  useUpdateOrderToPaidMutation,
 } = orderApi;
