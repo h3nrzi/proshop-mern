@@ -2,11 +2,11 @@ import _ from "lodash";
 import { Button, Table } from "react-bootstrap";
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetOrdersQuery } from "../api/orders-api";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
+import { useGetOrdersQuery } from "../../api/orders-api";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 
-const AdminOrderListPage = () => {
+const OrderListPage = () => {
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useGetOrdersQuery();
 
   if (ordersLoading) return <Loader />;
@@ -62,4 +62,4 @@ const AdminOrderListPage = () => {
   );
 };
 
-export default AdminOrderListPage;
+export default OrderListPage;

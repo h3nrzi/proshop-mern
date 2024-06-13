@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AdminLayout from "./layout/AdminLayout";
 import AppLayout from "./layout/AppLayout";
 import PrivateLayout from "./layout/PrivateLayout";
-import AdminOrderListPage from "./pages/AdminOrderListPage";
+import OrderListPage from "./pages/admin/OrderListPage";
 import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
           {
             path: "admin",
             element: <AdminLayout />,
-            children: [{ path: "order-list", element: <AdminOrderListPage /> }],
+            children: [{ path: "order-list", element: <OrderListPage /> }],
           },
         ],
       },
