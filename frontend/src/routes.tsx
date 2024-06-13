@@ -13,6 +13,7 @@ import ProductPage from "./pages/ProductPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import ShippingPage from "./pages/ShippingPage";
+import ProductListPage from "./pages/admin/ProductListPage";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,10 @@ const router = createBrowserRouter([
           {
             path: "admin",
             element: <AdminLayout />,
-            children: [{ path: "order-list", element: <OrderListPage /> }],
+            children: [
+              { path: "order-list", element: <OrderListPage /> },
+              { path: "product-list", element: <ProductListPage /> },
+            ],
           },
         ],
       },
