@@ -6,14 +6,22 @@ const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], void>({
       query: () => ({ url: PRODUCT_URL }),
-      keepUnusedDataFor: 5, // 5 seconds
+      keepUnusedDataFor: 10, // 10 seconds
     }),
 
     getProduct: builder.query<Product, string>({
       query: (productId) => ({ url: PRODUCT_URL + "/" + productId }),
-      keepUnusedDataFor: 5, // 5 seconds
+      keepUnusedDataFor: 10, // 10 seconds
+    }),
+
+    createProduct: builder.mutation<Product, void>({
+      query: () => ({
+        url: PRODUCT_URL,
+        method: "POST",
+      }),
+      invalidatesTags: ["Product"],
     }),
   }),
 });
 
-export const { useGetProductsQuery, useGetProductQuery } = productApi;
+export const { useGetProductsQuery, useGetProductQuery, useCreateProductMutation } = productApi;

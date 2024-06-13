@@ -1,20 +1,46 @@
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { useState } from "react";
+import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetProductsQuery } from "../../api/products-api";
+import { useCreateProductMutation, useGetProductsQuery } from "../../api/products-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import ReusableModal, { FooterButton } from "../../components/Modal";
+import { toast } from "react-toastify";
 
 const ProductListPage = () => {
   const {
     data: products,
     isLoading: productsLoading,
     error: productsError,
+    refetch: productsRefetch,
   } = useGetProductsQuery();
 
-  const deleteHandler = (_id: string) => {
+  const [createProductMutation, { isLoading: createProductLoading }] = useCreateProductMutation();
+
+  const createProductHandler = async () => {
+    try {
+      await createProductMutation();
+      productsRefetch();
+      toast.success("Product created successfully!", { position: "top-center" });
+      closeModalHandler();
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.error, { position: "top-center" });
+      closeModalHandler();
+    }
+  };
+
+  const deleteProductHandler = (_id: string) => {
     console.log(_id);
   };
+
+  // Reusable Modal
+  const [showModal, setShowModal] = useState(false);
+  const closeModalHandler = () => setShowModal(!showModal);
+  const showModalHandler = () => setShowModal(!showModal);
+  const footerButtons: FooterButton[] = [
+    { label: "Ok", onClick: createProductHandler, variant: "primary" },
+  ];
 
   if (productsLoading) return <Loader />;
   if (productsError) return <Message>Something failed!</Message>;
@@ -26,7 +52,16 @@ const ProductListPage = () => {
           <h1>Products</h1>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3 px-2 py-1 text-center">Create New Product</Button>
+          <Button className="btn-sm m-3 px-2 py-1 text-center" onClick={showModalHandler}>
+            Create New Product {createProductLoading && <Spinner size="sm" className="me-1" />}
+          </Button>
+          <ReusableModal
+            showModal={showModal}
+            closeModalHandler={closeModalHandler}
+            title="Create New Product"
+            body="Are you sure you want to create a new product?"
+            footerButtons={footerButtons}
+          />
         </Col>
       </Row>
 
@@ -58,7 +93,7 @@ const ProductListPage = () => {
                 <Button
                   variant="danger"
                   className="btn-sm ms-1"
-                  onClick={() => deleteHandler(product._id)}
+                  onClick={() => deleteProductHandler(product._id)}
                 >
                   <FaTrash size={15} />
                 </Button>
