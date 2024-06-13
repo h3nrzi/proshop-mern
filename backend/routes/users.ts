@@ -10,7 +10,7 @@ import {
   updateUser,
   updateUserProfile,
 } from "../controllers/user";
-import { admin, protect } from "../middlewares/auth";
+import auth from "../middlewares/auth";
 import catchAsync from "../middlewares/catchAsync";
 const router = express.Router();
 
@@ -18,8 +18,8 @@ router.post("/", catchAsync(register));
 router.post("/login", catchAsync(login));
 router.post("/logout", catchAsync(logout));
 
-////////// Access -> Private
-router.use(catchAsync(protect));
+/////////////////// Private
+router.use(catchAsync(auth.protect));
 
 router
   //
@@ -27,8 +27,8 @@ router
   .get(catchAsync(getUserProfile))
   .patch(catchAsync(updateUserProfile));
 
-////////// Access -> Admin
-router.use(catchAsync(admin));
+/////////////////// Admin
+router.use(catchAsync(auth.admin));
 
 router.get("/", catchAsync(getAllUsers));
 

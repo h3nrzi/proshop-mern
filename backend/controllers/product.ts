@@ -4,7 +4,7 @@ import Product from "../models/product";
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
-export const getAll: RequestHandler = async (req, res, next) => {
+export const getProducts: RequestHandler = async (req, res, next) => {
   const products = await Product.find();
   return res.json(products);
 };
@@ -12,7 +12,7 @@ export const getAll: RequestHandler = async (req, res, next) => {
 // @desc    Fetch a product
 // @route   GET /api/products/:id
 // @access  Public
-export const getOne: RequestHandler = async (req, res, next) => {
+export const getProduct: RequestHandler = async (req, res, next) => {
   const product = await Product.findById(req.params.id);
 
   if (!product) {

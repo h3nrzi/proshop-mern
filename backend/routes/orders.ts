@@ -7,7 +7,7 @@ import {
   updateOrderToDeliver,
   updateOrderToPaid,
 } from "../controllers/order";
-import * as auth from "../middlewares/auth";
+import auth from "../middlewares/auth";
 import catchAsync from "../middlewares/catchAsync";
 const router = express.Router();
 

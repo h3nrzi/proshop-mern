@@ -6,7 +6,7 @@ export interface CustomRequest extends Request {
   user?: any;
 }
 
-export const protect: RequestHandler = async (req: CustomRequest, res, next) => {
+const protect: RequestHandler = async (req: CustomRequest, res, next) => {
   let token: string;
 
   token = req.cookies.jwt;
@@ -28,7 +28,7 @@ export const protect: RequestHandler = async (req: CustomRequest, res, next) => 
   }
 };
 
-export const admin: RequestHandler = async (req: CustomRequest, res, next) => {
+const admin: RequestHandler = async (req: CustomRequest, res, next) => {
   if (!req.user || !req.user.isAdmin) {
     res.status(401);
     throw new Error("Not authorized as admin!");
@@ -36,3 +36,5 @@ export const admin: RequestHandler = async (req: CustomRequest, res, next) => {
 
   return next();
 };
+
+export default { protect, admin };
