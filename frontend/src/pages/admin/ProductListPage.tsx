@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useCreateProductMutation, useGetProductsQuery } from "../../api/products-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import ReusableModal, { FooterButton } from "../../components/Modal";
-import { toast } from "react-toastify";
+import _ from "lodash";
 
 const ProductListPage = () => {
   const {
@@ -65,7 +66,7 @@ const ProductListPage = () => {
         </Col>
       </Row>
 
-      <Table striped responsive bordered className="table-sm">
+      <Table responsive className="table-sm">
         <thead>
           <tr>
             <th>ID</th>
@@ -73,17 +74,19 @@ const ProductListPage = () => {
             <th>PRICE</th>
             <th>CATEGORY</th>
             <th>BRAND</th>
+            <th>COUNT</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {products?.map((product) => (
             <tr key={product._id}>
-              <td>{product._id}</td>
+              <td>{<Link to={`/product/${product._id}`}>{_.takeRight(product._id, 4)}</Link>}</td>
               <td>{product.name}</td>
               <td>{product.price}</td>
               <td>{product.category}</td>
               <td>{product.brand}</td>
+              <td>{product.countInStock}</td>
               <td>
                 <Link to={`/admin/product/${product._id}/edit`}>
                   <Button variant="info" className="btn-sm text-white">

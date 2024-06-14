@@ -14,9 +14,9 @@ const OrderListPage = () => {
 
   return (
     <>
-      <h1 className="text-center mb-5 bg-secondary text-white rounded-1">Orders</h1>
+      <h1>Orders</h1>
       {
-        <Table striped responsive bordered className="table-sm mt-3">
+        <Table responsive className="table-sm mt-3">
           <thead>
             <tr>
               <th>ID</th>
@@ -40,14 +40,20 @@ const OrderListPage = () => {
                   <td>{order.user.name}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>${order.totalPrice}</td>
-                  <td>{order.isPaid ? order.paidAt?.substring(0, 10) : <FaTimes />}</td>
-                  <td>{order.isDelivered ? order.deliveredAt?.substring(0, 10) : <FaTimes />}</td>
+                  <td>{order.isPaid ? order.paidAt?.substring(0, 10) : <FaTimes color="red" />}</td>
+                  <td>
+                    {order.isDelivered ? (
+                      order.deliveredAt?.substring(0, 10)
+                    ) : (
+                      <FaTimes color="red" />
+                    )}
+                  </td>
                   <td>
                     {order.isPaid && order.isDelivered ? (
                       <FaCheck color="green" />
                     ) : (
                       <Link to={`/order/${order._id}`}>
-                        <Button size="sm" as="span" variant="secondary">
+                        <Button size="sm" as="span" variant="secondary" className="text-white">
                           Details
                         </Button>
                       </Link>

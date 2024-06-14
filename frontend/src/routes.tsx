@@ -3,6 +3,8 @@ import AdminLayout from "./layout/AdminLayout";
 import AppLayout from "./layout/AppLayout";
 import PrivateLayout from "./layout/PrivateLayout";
 import OrderListPage from "./pages/admin/OrderListPage";
+import ProductEditPage from "./pages/admin/ProductEditPage";
+import ProductListPage from "./pages/admin/ProductListPage";
 import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -13,7 +15,6 @@ import ProductPage from "./pages/ProductPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import ShippingPage from "./pages/ShippingPage";
-import ProductListPage from "./pages/admin/ProductListPage";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
             children: [
               { path: "order-list", element: <OrderListPage /> },
               { path: "product-list", element: <ProductListPage /> },
+              { path: "product/:id/edit", element: <ProductEditPage /> },
             ],
           },
         ],

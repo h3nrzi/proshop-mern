@@ -109,7 +109,7 @@ const ProfilePage = () => {
         {myOrdersLoading ? (
           <Loader />
         ) : (
-          <Table striped responsive bordered className="table-sm mt-3">
+          <Table responsive className="table-sm mt-3">
             <thead>
               <tr>
                 <th>ID</th>
@@ -137,7 +137,7 @@ const ProfilePage = () => {
                       <FaCheck color="green" />
                     ) : (
                       <Link to={`/order/${order._id}`}>
-                        <Button size="sm" as="span" variant="secondary">
+                        <Button size="sm" as="span" variant="secondary" className="text-white">
                           Details
                         </Button>
                       </Link>

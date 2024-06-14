@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { RequestHandler } from "express";
 import Product from "../models/product";
+import UpdateProductDto from "../Dto/UpdateProductDto";
 // import CreateProductDto from "../Dto/CreateProductDto";
 
 export interface CustomRequest extends Request {
@@ -51,4 +52,30 @@ export const createProduct: RequestHandler = async (req: CustomRequest, res, nex
   const createdProduct = await product.save();
 
   res.status(201).json(createdProduct);
+};
+
+// @desc    Update a product
+// @route   PATCH /api/products/:id
+// @access  Private/admin
+export const updateProduct: RequestHandler = async (req, res, next) => {
+  const { name, price, description, image, brand, category, countInStock } =
+    req.body as UpdateProductDto;
+
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+
+  product.name = name;
+  product.price = price;
+  product.description = description;
+  product.image = image;
+  product.brand = brand;
+  product.category = category;
+  product.countInStock = countInStock;
+
+  const updatedProduct = await product.save();
+
+  return res.json(updatedProduct);
 };
