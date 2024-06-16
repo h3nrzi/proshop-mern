@@ -1,13 +1,17 @@
+import _ from "lodash";
 import { useState } from "react";
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCreateProductMutation, useGetProductsQuery } from "../../api/products-api";
+import {
+  useCreateProductMutation,
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../../api/products-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import ReusableModal, { FooterButton } from "../../components/Modal";
-import _ from "lodash";
+import ReusableModal, { FooterButton } from "../../components/ReusableModal";
 
 const ProductListPage = () => {
   const {
@@ -18,6 +22,8 @@ const ProductListPage = () => {
   } = useGetProductsQuery();
 
   const [createProductMutation, { isLoading: createProductLoading }] = useCreateProductMutation();
+
+  const [deleteProductMutation, { isLoading: deleteProductLoading }] = useDeleteProductMutation();
 
   const createProductHandler = async () => {
     try {
@@ -31,19 +37,28 @@ const ProductListPage = () => {
     }
   };
 
-  const deleteProductHandler = (_id: string) => {
-    console.log(_id);
+  const deleteProductHandler = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete")) {
+      try {
+        const res = await deleteProductMutation(id).unwrap();
+        productsRefetch();
+        toast.success(res.message, { position: "top-center" });
+      } catch (err: any) {
+        toast.error(err?.data?.message || err.error, { position: "top-center" });
+      }
+    }
   };
 
   // Reusable Modal
   const [showModal, setShowModal] = useState(false);
   const closeModalHandler = () => setShowModal(!showModal);
   const showModalHandler = () => setShowModal(!showModal);
-  const footerButtons: FooterButton[] = [
-    { label: "Ok", onClick: createProductHandler, variant: "primary" },
+  const createProductButtons: FooterButton[] = [
+    { label: "Ok", onCreate: createProductHandler, variant: "primary" },
   ];
 
   if (productsLoading) return <Loader />;
+  if (deleteProductLoading) return <Loader />;
   if (productsError) return <Message>Something failed!</Message>;
 
   return (
@@ -61,7 +76,7 @@ const ProductListPage = () => {
             closeModalHandler={closeModalHandler}
             title="Create New Product"
             body="Are you sure you want to create a new product?"
-            footerButtons={footerButtons}
+            footerButtons={createProductButtons}
           />
         </Col>
       </Row>

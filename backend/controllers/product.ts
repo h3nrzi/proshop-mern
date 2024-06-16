@@ -80,6 +80,22 @@ export const updateProduct: RequestHandler = async (req, res, next) => {
   return res.json(updatedProduct);
 };
 
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
+// @access  Private/admin
+export const deleteProduct: RequestHandler = async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+
+  await Product.deleteOne({ _id: product._id });
+
+  return res.status(200).json({ message: "Product deleted successfully" });
+};
+
 // @desc    Upload product image
 // @route   PATCH /api/products/:id
 // @access  Private/Admin

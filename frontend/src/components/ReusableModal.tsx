@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 
 export interface FooterButton {
   label: string;
-  onClick?: () => void;
+  onCreate?: () => void;
   variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "light" | "dark";
 }
 
@@ -30,7 +30,7 @@ const ReusableModal = ({
       <Modal.Body>{body}</Modal.Body>
       <Modal.Footer>
         {footerButtons.map((button, index) => (
-          <Button key={index} variant={button.variant} onClick={button.onClick}>
+          <Button key={index} variant={button.variant} onClick={button.onCreate}>
             {button.label}
           </Button>
         ))}
