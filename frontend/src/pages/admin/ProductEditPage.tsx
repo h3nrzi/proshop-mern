@@ -2,21 +2,23 @@ import { useEffect } from "react";
 import { Button, Form, Spinner, Stack } from "react-bootstrap";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useGetProductQuery, useUpdateProductMutation } from "../../api/products-api";
+import { toast } from "react-toastify";
+import {
+  useGetProductQuery,
+  useUpdateProductMutation,
+  useUploadProductImageMutation,
+} from "../../api/products-api";
 import FormContainer from "../../components/FormContainer";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Product from "../../entities/Product";
 import { getErrorMessage } from "../../utils/getErrorMessage";
-import { toast } from "react-toastify";
 
 type FormData = Product;
 
 const ProductEditPage = () => {
   const { id: productId } = useParams();
-
   const navigate = useNavigate();
-
   const { register, handleSubmit, setValue } = useForm<FormData>();
 
   const {
@@ -27,6 +29,9 @@ const ProductEditPage = () => {
   } = useGetProductQuery(productId!);
 
   const [updateProductMutation, { isLoading: updateProductLoading }] = useUpdateProductMutation();
+
+  const [uploadProductImageMutation, { isLoading: uploadProductImageLoading }] =
+    useUploadProductImageMutation();
 
   useEffect(() => {
     if (product) {
@@ -51,6 +56,21 @@ const ProductEditPage = () => {
     }
   };
 
+  const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      try {
+        const res = await uploadProductImageMutation(formData).unwrap();
+        setValue("image", res.image);
+        toast.success(res.message, { position: "top-center" });
+      } catch (err: any) {
+        toast.error(err?.data?.message || err?.error, { position: "top-center" });
+      }
+    }
+  };
+
   if (productLoading) return <Loader />;
   if (productError) return <Message variant="danger">{getErrorMessage(productError)}</Message>;
 
@@ -68,7 +88,14 @@ const ProductEditPage = () => {
               <Form.Control type="text" {...register("name")} />
             </Form.Group>
 
-            {/* IMAGE INPUT PLACEHOLDER */}
+            <Form.Group controlId="image">
+              <Form.Label>Image</Form.Label>
+              {uploadProductImageLoading && <Spinner size="sm" className="ms-2 text-success" />}
+              <Stack gap={4} direction="horizontal">
+                <Form.Control type="text" placeholder="Enter Image url" {...register("image")} />
+                <Form.Control type="file" placeholder="Choose file" onChange={uploadFileHandler} />
+              </Stack>
+            </Form.Group>
 
             <Stack gap={4} direction="horizontal">
               <Form.Group controlId="category" className="flex-grow-1">

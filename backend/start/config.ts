@@ -18,7 +18,7 @@ module.exports = (app: Express) => {
   // CORS Origin Request
   // app.use(cors());
 
-  // Serve Images
-  const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "/uploads")));
+  // Serve the files in the uploads directory
+  const uploadsPath = path.resolve(__dirname, "../../uploads");
+  app.use("/uploads", express.static(uploadsPath));
 };

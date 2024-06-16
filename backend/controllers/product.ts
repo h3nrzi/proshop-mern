@@ -79,3 +79,18 @@ export const updateProduct: RequestHandler = async (req, res, next) => {
 
   return res.json(updatedProduct);
 };
+
+// @desc    Upload product image
+// @route   PATCH /api/products/:id
+// @access  Private/Admin
+export const uploadProductImage: RequestHandler = (req, res, next) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error("Invalid file type. Only JPG, JPEG, and PNG are allowed.");
+  }
+
+  return res.send({
+    message: "Image Uploaded",
+    image: "/" + req.file.path,
+  });
+};
