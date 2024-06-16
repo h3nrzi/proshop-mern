@@ -83,7 +83,7 @@ const ProductListPage = () => {
             <tr key={product._id}>
               <td>{<Link to={`/product/${product._id}`}>{_.takeRight(product._id, 4)}</Link>}</td>
               <td>{product.name}</td>
-              <td>{product.price}</td>
+              <td>{product.price ? `$${product.price}` : ``}</td>
               <td>{product.category}</td>
               <td>{product.brand}</td>
               <td>{product.countInStock}</td>
@@ -98,7 +98,7 @@ const ProductListPage = () => {
                   className="btn-sm ms-1"
                   onClick={() => deleteProductHandler(product._id)}
                 >
-                  <FaTrash size={15} />
+                  <FaTrash size={15} color="white" />
                 </Button>
               </td>
             </tr>

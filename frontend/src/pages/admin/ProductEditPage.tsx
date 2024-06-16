@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, Form, Stack } from "react-bootstrap";
+import { Button, Form, Spinner, Stack } from "react-bootstrap";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetProductQuery, useUpdateProductMutation } from "../../api/products-api";
@@ -90,11 +90,11 @@ const ProductEditPage = () => {
             <Stack direction="horizontal" gap={4}>
               <Form.Group controlId="price" className="flex-grow-1">
                 <Form.Label>Price</Form.Label>
-                <Form.Control type="number" step=".01" {...register("price")} />
+                <Form.Control type="number" min=".00" step=".01" {...register("price")} />
               </Form.Group>
               <Form.Group controlId="countInStock" className="flex-grow-1">
                 <Form.Label>Count In Stock</Form.Label>
-                <Form.Control type="number" {...register("countInStock")} />
+                <Form.Control type="number" min="0" {...register("countInStock")} />
               </Form.Group>
             </Stack>
 
@@ -104,7 +104,7 @@ const ProductEditPage = () => {
             </Form.Group>
 
             <Button type="submit" variant="secondary" className="text-white">
-              Update
+              Update {updateProductLoading && <Spinner size="sm" />}
             </Button>
           </Stack>
         </Form>
