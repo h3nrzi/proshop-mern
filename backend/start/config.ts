@@ -1,3 +1,4 @@
+import path from "path";
 import express, { Express } from "express";
 import morgan from "morgan";
 // import cors from "cors";
@@ -16,4 +17,8 @@ module.exports = (app: Express) => {
 
   // CORS Origin Request
   // app.use(cors());
+
+  // Serve Images
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, "/uploads")));
 };
