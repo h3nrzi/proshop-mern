@@ -1,6 +1,6 @@
 import { Request, RequestHandler } from "express";
-import CreateOrderDto from "../Dto/CreateOrderDto";
-import UpdateOrderToPaidDto from "../Dto/UpdateOrderToPaidDto";
+import CreateOrderDto from "../Dto/Order/CreateOrderDto";
+import UpdateOrderToPaidDto from "../Dto/Order/UpdateOrderToPaidDto";
 import Order from "../models/order";
 
 export interface CustomRequest extends Request {

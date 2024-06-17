@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { RequestHandler } from "express";
 import Product from "../models/product";
-import UpdateProductDto from "../Dto/UpdateProductDto";
+import UpdateProductDto from "../Dto/Order/UpdateProductDto";
 // import CreateProductDto from "../Dto/CreateProductDto";
 
 export interface CustomRequest extends Request {

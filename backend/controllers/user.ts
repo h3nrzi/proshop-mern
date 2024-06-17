@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
 import _ from "lodash";
-import LoginDto from "../Dto/LoginDto";
-import RegisterDto from "../Dto/RegisterDto";
+import LoginDto from "../Dto/User/LoginDto";
+import RegisterDto from "../Dto/User/RegisterDto";
 import { CustomRequest } from "../middlewares/auth";
 import User from "../models/user";
 import generateToken from "../utils/generateToken";
+import UpdateUser from "../Dto/User/UpdateUser";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -41,6 +42,7 @@ export const register: RequestHandler = async (req, res, next) => {
 
   // Check if user already exists
   const userExists = await User.findOne({ email });
+
   if (userExists) {
     res.status(400);
     throw new Error("User already exists");
@@ -49,11 +51,6 @@ export const register: RequestHandler = async (req, res, next) => {
   // Create a new user
   const newUser = new User({ name, email, password });
   await newUser.save();
-
-  if (!newUser) {
-    res.status(400);
-    throw new Error("Invalid user data");
-  }
 
   // Generate and send token
   generateToken(res, newUser._id);
@@ -111,26 +108,63 @@ export const updateUserProfile: RequestHandler = async (req: CustomRequest, res,
 // @route   GET /api/users
 // @access  Private -> Admin
 export const getAllUsers: RequestHandler = async (req, res, next) => {
-  res.send("get all users");
+  const users = await User.find({});
+  res.status(200).json(users);
 };
 
 // @desc    Get user
 // @route   GET /api/users/:id
 // @access  Private -> Admin
 export const getUser: RequestHandler = async (req, res, next) => {
-  res.send("get user");
+  const user = await User.findById(req.params.id).select("-password");
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  res.status(200).json(user);
 };
 
 // @desc    Update user
 // @route   PATCH /api/users/:id
 // @access  Private -> Admin
 export const updateUser: RequestHandler = async (req, res, next) => {
-  res.send("update user");
+  const { email, name, isAdmin } = req.body as UpdateUser;
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  user.name = name || user.name;
+  user.email = email || user.email;
+  user.isAdmin = isAdmin || user.isAdmin;
+
+  const updatedUser = await user.save();
+
+  res.status(200).json(_.pick(updatedUser, "_id", "name", "email", "isAdmin"));
 };
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private -> Admin
 export const deleteUser: RequestHandler = async (req, res, next) => {
-  res.send("delete user");
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (user.isAdmin) {
+    res.status(400);
+    throw new Error("Cannot delete admin user");
+  }
+
+  await User.deleteOne({ _id: user._id });
+
+  res.status(200).json({ message: "User deleted successfully" });
 };
