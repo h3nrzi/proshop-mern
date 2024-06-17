@@ -2,10 +2,11 @@ import _ from "lodash";
 import { Button, Table } from "react-bootstrap";
 import { FaCheck, FaEdit, FaTimes, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetUsersQuery } from "../../api/users-api";
+import { useGetUsersQuery, useDeleteUserMutation } from "../../api/users-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { getErrorMessage } from "../../utils/getErrorMessage";
+import { toast } from "react-toastify";
 
 const UserListPage = () => {
   const {
@@ -15,8 +16,23 @@ const UserListPage = () => {
     refetch: usersRefetch,
   } = useGetUsersQuery();
 
+  const [deleteUserMutation, { isLoading: deleteUserLoading }] = useDeleteUserMutation();
+
   if (usersLoading) return <Loader />;
+  if (deleteUserLoading) return <Loader />;
   if (usersError) return <Message variant="danger">{getErrorMessage(usersError)}</Message>;
+
+  async function deleteUserHandler(id: string) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        const res = await deleteUserMutation(id).unwrap();
+        usersRefetch();
+        toast.success(res.message, { position: "top-center" });
+      } catch (err: any) {
+        toast.error(err?.data?.message || err.error, { position: "top-center" });
+      }
+    }
+  }
 
   return (
     <>
@@ -50,7 +66,11 @@ const UserListPage = () => {
                         <FaEdit size={20} />
                       </Button>
                     </Link>
-                    <Button variant="danger" className="btn-sm ms-1" onClick={() => {}}>
+                    <Button
+                      variant="danger"
+                      className="btn-sm ms-1"
+                      onClick={() => deleteUserHandler(user._id)}
+                    >
                       <FaTrash size={15} color="white" />
                     </Button>
                   </td>

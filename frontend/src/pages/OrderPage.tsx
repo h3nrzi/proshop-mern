@@ -8,37 +8,44 @@ import {
 import moment from "moment";
 import { useEffect } from "react";
 import { Button, Card, Col, Image, ListGroup, Row, Spinner } from "react-bootstrap";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useGetOrderQuery,
   useGetPayPalClientIdQuery,
-  useUpdateOrderToPaidMutation,
   useUpdateOrderToDeliverMutation,
+  useUpdateOrderToPaidMutation,
 } from "../api/orders-api";
+import { RootState } from "../app/store";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
 
 const OrderPage = () => {
   const { id: orderId } = useParams();
+
   const navigate = useNavigate();
+
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
+
   const {
     data: order,
     isLoading: orderLoading,
     error: orderError,
     refetch: orderRefetch,
   } = useGetOrderQuery(orderId!);
+
   const {
     data: paypal,
     isLoading: paypalLoading,
     error: paypalError,
   } = useGetPayPalClientIdQuery();
+
   const [updateOrderToPaidMutation, { isLoading: updateOrderToPaidLoading }] =
     useUpdateOrderToPaidMutation();
+
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
   const [updateOrderToDeliverMutation, { isLoading: updateOrderToDeliverLoading }] =
     useUpdateOrderToDeliverMutation();
 
