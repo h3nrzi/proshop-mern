@@ -5,6 +5,7 @@ import PrivateLayout from "./layout/PrivateLayout";
 import OrderListPage from "./pages/admin/OrderListPage";
 import ProductEditPage from "./pages/admin/ProductEditPage";
 import ProductListPage from "./pages/admin/ProductListPage";
+import UserListPage from "./pages/admin/UserListPage";
 import CartPage from "./pages/CartPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
               { path: "order-list", element: <OrderListPage /> },
               { path: "product-list", element: <ProductListPage /> },
               { path: "product/:id/edit", element: <ProductEditPage /> },
+              { path: "user-list", element: <UserListPage /> },
             ],
           },
         ],

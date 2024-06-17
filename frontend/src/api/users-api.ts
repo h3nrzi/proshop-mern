@@ -23,6 +23,12 @@ interface LoginData {
 
 const usersApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    getUsers: builder.query<UserInfo[], void>({
+      query: () => ({ url: USERS_URL }),
+      providesTags: ["User"],
+      keepUnusedDataFor: 10,
+    }),
+
     login: builder.mutation<UserInfo, LoginData>({
       query: (data) => ({
         url: USERS_URL + "/login",
@@ -61,4 +67,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useUpdateProfileMutation,
+  useGetUsersQuery,
 } = usersApi;
