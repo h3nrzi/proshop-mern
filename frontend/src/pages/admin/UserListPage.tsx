@@ -54,7 +54,7 @@ const UserListPage = () => {
                 <tr key={user._id}>
                   <td>
                     <Link to={`/admin/user/${user._id}`}>
-                      {_.takeRight(user._id.split(""), 4).join("")}
+                      {_.takeRight(user._id?.split(""), 4).join("")}
                     </Link>
                   </td>
                   <td>{user.name}</td>
@@ -69,7 +69,7 @@ const UserListPage = () => {
                     <Button
                       variant="danger"
                       className="btn-sm ms-1"
-                      onClick={() => deleteUserHandler(user._id)}
+                      onClick={() => deleteUserHandler(user._id!)}
                     >
                       <FaTrash size={15} color="white" />
                     </Button>
