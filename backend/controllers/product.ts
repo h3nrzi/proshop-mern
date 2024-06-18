@@ -139,14 +139,7 @@ export const createProductReview: RequestHandler = async (req: CustomRequest, re
     comment,
   };
 
-  product.reviews.push(review);
-
-  const reviewCount = product.reviews.length;
-  const reviewRatingSum = product.reviews.reduce((acc, review) => acc + review.rating, 0);
-
-  product.numReviews = reviewCount;
-  product.rating = reviewRatingSum / reviewCount;
-
+  await product.addReview(review);
   await product.save();
 
   res.status(201).json({ message: "Review Added" });
