@@ -2,6 +2,7 @@ import { Request } from "express";
 import { RequestHandler } from "express";
 import Product from "../models/product";
 import UpdateProductDto from "../Dto/Order/UpdateProductDto";
+import CreateProductReview from "../Dto/Product/CreateProductReview";
 // import CreateProductDto from "../Dto/CreateProductDto";
 
 export interface CustomRequest extends Request {
@@ -109,4 +110,44 @@ export const uploadProductImage: RequestHandler = (req, res, next) => {
     message: "Image Uploaded",
     image: "/" + req.file.path,
   });
+};
+
+// @desc    Create a new review
+// @route   POST /api/products/:id/review
+// @access  Private/Admin
+export const createProductReview: RequestHandler = async (req: CustomRequest, res, next) => {
+  const { comment, rating } = req.body as CreateProductReview;
+
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    res.status(404);
+    throw new Error("Product not found");
+  }
+
+  const alreadyReviewed = product.reviews.find(
+    (review) => review.user.toString() === req.user._id.toString()
+  );
+  if (alreadyReviewed) {
+    res.status(400);
+    throw new Error("Product already reviewed");
+  }
+
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    rating,
+    comment,
+  };
+
+  product.reviews.push(review);
+
+  const reviewCount = product.reviews.length;
+  const reviewRatingSum = product.reviews.reduce((acc, review) => acc + review.rating, 0);
+
+  product.numReviews = reviewCount;
+  product.rating = reviewRatingSum / reviewCount;
+
+  await product.save();
+
+  res.status(201).json({ message: "Review Added" });
 };
