@@ -139,6 +139,11 @@ export const updateUser: RequestHandler = async (req, res, next) => {
     throw new Error("User not found");
   }
 
+  if (user.email === "admin@gmail.com") {
+    res.status(400);
+    throw new Error("Cannot update this user");
+  }
+
   user.name = name || user.name;
   user.email = email || user.email;
   user.isAdmin = isAdmin ? true : false;
@@ -159,9 +164,9 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
     throw new Error("User not found");
   }
 
-  if (user.isAdmin) {
+  if (user.email === "admin@gmail.com") {
     res.status(400);
-    throw new Error("Cannot delete admin user");
+    throw new Error("Cannot delete this user");
   }
 
   await User.deleteOne({ _id: user._id });

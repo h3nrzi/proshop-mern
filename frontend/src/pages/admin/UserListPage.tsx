@@ -1,12 +1,15 @@
 import _ from "lodash";
 import { Button, Table } from "react-bootstrap";
-import { FaCheck, FaEdit, FaTimes, FaTrash } from "react-icons/fa";
+import { FaCheck, FaEdit, FaTimes, FaTrash, FaCheckSquare } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useGetUsersQuery, useDeleteUserMutation } from "../../api/users-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import UserInfo from "../../entities/UserInfo";
 
 const UserListPage = () => {
   const {
@@ -34,6 +37,17 @@ const UserListPage = () => {
     }
   }
 
+  function getAdminIcon(user: UserInfo) {
+    if (user.isAdmin)
+      return user.email === "admin@gmail.com" ? (
+        <FaCheckSquare color="gold" size="25px" />
+      ) : (
+        <FaCheck color="green" size="20px" />
+      );
+
+    return <FaTimes color="red" size="25px" />;
+  }
+
   return (
     <>
       <h1 className="mb-5">Users</h1>
@@ -59,20 +73,26 @@ const UserListPage = () => {
                   </td>
                   <td>{user.name}</td>
                   <td>{<a href={`mailto:${user.email}`}>{user.email}</a>}</td>
-                  <td>{user.isAdmin ? <FaCheck color="green" /> : <FaTimes color="red" />}</td>
+                  <td>{getAdminIcon(user)}</td>
                   <td>
-                    <Link to={`/admin/user/${user._id}/edit`}>
-                      <Button variant="info" className="btn-sm text-white">
-                        <FaEdit size={20} />
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="danger"
-                      className="btn-sm ms-1"
-                      onClick={() => deleteUserHandler(user._id!)}
-                    >
-                      <FaTrash size={15} color="white" />
-                    </Button>
+                    {user.email === "admin@gmail.com" ? (
+                      "-----------"
+                    ) : (
+                      <>
+                        <Link to={`/admin/user/${user._id}/edit`}>
+                          <Button variant="info" className="btn-sm text-white">
+                            <FaEdit size={20} />
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="danger"
+                          className="btn-sm ms-1"
+                          onClick={() => deleteUserHandler(user._id!)}
+                        >
+                          <FaTrash size={15} color="white" />
+                        </Button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -65,7 +65,7 @@ const UserEditPage = () => {
 
       navigate("/admin/user-list");
     } catch (err: any) {
-      toast.error(err.message, { position: "top-center" });
+      toast.error(err?.data?.message || err.error, { position: "top-center" });
     }
   };
 

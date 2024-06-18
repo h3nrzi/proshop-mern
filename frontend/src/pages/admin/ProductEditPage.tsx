@@ -52,7 +52,8 @@ const ProductEditPage = () => {
       toast.success("Product updated successfully", { position: "top-center" });
       navigate("/admin/product-list");
     } catch (err: any) {
-      toast.error(err.message, { position: "top-center" });
+      console.log(err);
+      toast.error(err?.data?.message || err.error, { position: "top-center" });
     }
   };
 
