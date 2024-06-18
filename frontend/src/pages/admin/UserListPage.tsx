@@ -1,15 +1,13 @@
 import _ from "lodash";
 import { Button, Table } from "react-bootstrap";
-import { FaCheck, FaEdit, FaTimes, FaTrash, FaCheckSquare } from "react-icons/fa";
+import { FaCheck, FaCheckSquare, FaEdit, FaTimes, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useGetUsersQuery, useDeleteUserMutation } from "../../api/users-api";
+import { toast } from "react-toastify";
+import { useDeleteUserMutation, useGetUsersQuery } from "../../api/users-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import { getErrorMessage } from "../../utils/getErrorMessage";
-import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
 import UserInfo from "../../entities/UserInfo";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const UserListPage = () => {
   const {
