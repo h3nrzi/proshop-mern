@@ -37,6 +37,7 @@ const productApi = apiSlice.injectEndpoints({
         url: PRODUCT_URL + "/" + productId,
         method: "DELETE",
       }),
+      invalidatesTags: ["Product"],
     }),
 
     uploadProductImage: builder.mutation<{ message: string; image: string }, FormData>({
@@ -45,6 +46,7 @@ const productApi = apiSlice.injectEndpoints({
         method: "POST",
         body: formData,
       }),
+      invalidatesTags: ["Product"],
     }),
   }),
 });

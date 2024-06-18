@@ -1,9 +1,11 @@
 import _ from "lodash";
-import { Button, Table } from "react-bootstrap";
+import { Badge, Button, Table } from "react-bootstrap";
 import { FaCheck, FaCheckSquare, FaEdit, FaTimes, FaTrash } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDeleteUserMutation, useGetUsersQuery } from "../../api/users-api";
+import { RootState } from "../../app/store";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import UserInfo from "../../entities/UserInfo";
@@ -18,6 +20,8 @@ const UserListPage = () => {
   } = useGetUsersQuery();
 
   const [deleteUserMutation, { isLoading: deleteUserLoading }] = useDeleteUserMutation();
+
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
 
   if (usersLoading) return <Loader />;
   if (deleteUserLoading) return <Loader />;
@@ -69,7 +73,13 @@ const UserListPage = () => {
                       {_.takeRight(user._id?.split(""), 4).join("")}
                     </Link>
                   </td>
-                  <td>{user.name}</td>
+                  <td>
+                    {user._id === userInfo?._id ? (
+                      <Badge className="fs-6">{user.name}</Badge>
+                    ) : (
+                      user.name
+                    )}
+                  </td>
                   <td>{<a href={`mailto:${user.email}`}>{user.email}</a>}</td>
                   <td>{getAdminIcon(user)}</td>
                   <td>
