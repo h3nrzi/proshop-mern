@@ -6,6 +6,7 @@ import { CustomRequest } from "../middlewares/auth";
 import User from "../models/user";
 import generateToken from "../utils/generateToken";
 import UpdateUser from "../Dto/User/UpdateUser";
+import Order from "../models/order";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -169,7 +170,11 @@ export const deleteUser: RequestHandler = async (req, res, next) => {
     throw new Error("Cannot delete this user");
   }
 
+  // Delete orders related to the user
+  await Order.deleteMany({ user: user._id });
+
+  // Delete the user
   await User.deleteOne({ _id: user._id });
 
-  res.status(200).json({ message: "User deleted successfully" });
+  res.status(200).json({ message: "User and related orders deleted successfully" });
 };
