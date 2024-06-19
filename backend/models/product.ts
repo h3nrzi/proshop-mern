@@ -49,10 +49,8 @@ const productSchema = new Schema<Product>(
   { timestamps: true }
 );
 
-productSchema.methods.addReview = async function (review: Review) {
-  const alreadyReviewed = this.reviews.some(
-    (r: Review) => r.user.toString() === review.user.toString()
-  );
+productSchema.methods.addReview = async function (this: Product, review: Review) {
+  const alreadyReviewed = this.reviews.some((r) => r.user.toString() === review.user.toString());
 
   if (alreadyReviewed) {
     throw new Error("Product already reviewed");
@@ -60,8 +58,7 @@ productSchema.methods.addReview = async function (review: Review) {
 
   this.reviews.push(review);
   this.numReviews = this.reviews.length;
-  this.rating =
-    this.reviews.reduce((sum: number, review: Review) => sum + review.rating, 0) / this.numReviews;
+  this.rating = this.reviews.reduce((sum, review) => sum + review.rating, 0) / this.numReviews;
 };
 
 const Product = model<Product>("Product", productSchema);
