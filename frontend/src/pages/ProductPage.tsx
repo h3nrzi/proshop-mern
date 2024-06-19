@@ -21,8 +21,6 @@ const ProductPage = () => {
   const { id: productId } = useParams();
 
   const [qty, setQty] = useState(1);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
