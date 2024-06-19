@@ -58,7 +58,7 @@ const ProductPage = () => {
 
   async function submitHandler(data: FormData) {
     if (!data.rating || !data.comment)
-      toast.error("Please fill out the form", { position: "top-center" });
+      return toast.error("Please fill out the form", { position: "top-center" });
 
     try {
       const res = await createProductReviewMutation({ productId: productId!, ...data }).unwrap();
