@@ -54,7 +54,7 @@ const productApi = apiSlice.injectEndpoints({
       { comment: string; rating: number; productId: string }
     >({
       query: (data) => ({
-        url: PRODUCT_URL + "/" + data.productId,
+        url: PRODUCT_URL + "/" + data.productId + "/review",
         method: "POST",
         body: data,
       }),

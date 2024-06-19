@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
-import { Button, Card, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, Image, ListGroup, Row, Stack } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,6 +11,11 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Rating from "../components/Rating";
 import { getErrorMessage } from "../utils/getErrorMessage";
+
+interface FormData {
+  rating: number;
+  comment: string;
+}
 
 const ProductPage = () => {
   const { id: productId } = useParams();
@@ -30,6 +36,8 @@ const ProductPage = () => {
     refetch: productRefetch,
   } = useGetProductQuery(productId!);
 
+  const { register, handleSubmit } = useForm<FormData>();
+
   const [createProductReviewMutation, { isLoading: createProductReviewLoading }] =
     useCreateProductReviewMutation();
 
@@ -41,14 +49,27 @@ const ProductPage = () => {
 
   //////////////
 
-  const addToCartHandler = () => {
-    dispatch(addToCart({ ...product, qty }));
+  function addToCartHandler() {
+    dispatch(addToCart({ ...product!, qty }));
     toast.success("Added to your cart", {
       onClick: () => navigate("/cart"),
       position: "top-center",
       style: { cursor: "pointer" },
     });
-  };
+  }
+
+  async function submitHandler(data: FormData) {
+    if (!data.rating || !data.comment)
+      toast.error("Please fill out the form", { position: "top-center" });
+
+    try {
+      const res = await createProductReviewMutation({ productId: productId!, ...data }).unwrap();
+      productRefetch();
+      toast.success(res.message, { position: "top-center" });
+    } catch (err: any) {
+      toast.error(err?.data?.message || err.error, { position: "top-center" });
+    }
+  }
 
   /////////////
 
@@ -132,9 +153,67 @@ const ProductPage = () => {
           </Col>
         </Row>
 
-        <Row className="review">
+        <Row className="review mt-5">
           <Col md={6}>
+            {/* SHOW REVIEWS */}
             <h2>Reviews</h2>
+            {product.reviews?.length === 0 && <Message>No Reviews</Message>}
+            <ListGroup variant="flush">
+              {product.reviews?.map((review) => (
+                <ListGroup.Item key={review._id}>
+                  <strong>{review.name}</strong>
+                  <Rating value={review.rating} />
+                  <p>{review.createdAt.substring(0, 10)}</p>
+                  <p>{review.comment}</p>
+                </ListGroup.Item>
+              ))}
+
+              {/* WRITE REVIEWS */}
+              <ListGroup.Item className="p-0 mt-5">
+                {userInfo ? (
+                  <Form onSubmit={handleSubmit(submitHandler)}>
+                    <Form.Group controlId="rating" className="my-2">
+                      <Stack className="flex-column flex-md-row align-items-md-start gap-md-2">
+                        <h2 className="flex-md-grow-1">Write a Customer Review</h2>
+                        <Form.Floating>
+                          <Form.Select
+                            aria-label="Rating"
+                            {...register("rating", { valueAsNumber: true })}
+                          >
+                            <option value=""></option>
+                            <option value="1">1 - Poor</option>
+                            <option value="2">2 - Fair</option>
+                            <option value="3">3 - Good</option>
+                            <option value="4">4 - Very Good</option>
+                            <option value="5">5 - Excellent</option>
+                          </Form.Select>
+                          <label htmlFor="rating">Rating</label>
+                        </Form.Floating>
+                      </Stack>
+                    </Form.Group>
+                    <Form.Group as="fieldset" controlId="comment">
+                      <Form.Label as="legend">Comment</Form.Label>
+                      <Form.Control as="textarea" rows={5} {...register("comment")} />
+                    </Form.Group>
+                    <Button
+                      type="submit"
+                      className="mt-2 w-25"
+                      disabled={createProductReviewLoading}
+                    >
+                      Submit
+                    </Button>
+                  </Form>
+                ) : (
+                  <Fragment>
+                    <h2 className="flex-md-grow-1">Write a Customer Review</h2>
+                    <Message>
+                      Please <Link to={`/login?redirect=${"/product/" + productId}`}>sing in</Link>
+                      to write a review
+                    </Message>
+                  </Fragment>
+                )}
+              </ListGroup.Item>
+            </ListGroup>
           </Col>
         </Row>
       </Fragment>

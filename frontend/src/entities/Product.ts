@@ -3,6 +3,8 @@ import { UserInfo } from "./Auth";
 interface Review {
   _id: string;
   comment: string;
+  createdAt: string;
+  name: string;
   rating: number;
   user: string | UserInfo;
 }
