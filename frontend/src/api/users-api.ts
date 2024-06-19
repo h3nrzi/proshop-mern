@@ -1,5 +1,5 @@
 import { USERS_URL } from "../constants";
-import UserInfo from "../entities/UserInfo";
+import { UserInfo } from "../entities/Auth";
 import apiSlice from "./api-slice";
 
 interface UpdateProfileData {

@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Auth from "../entities/Auth";
-import UserInfo from "../entities/UserInfo";
+import Auth, { UserInfo } from "../entities/Auth";
 
 const initialState: Auth = {
   userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")!) : null,
@@ -17,7 +16,7 @@ const authSlice = createSlice({
     },
 
     clearCredentials: (auth) => {
-      auth.userInfo = null;
+      auth.userInfo = undefined;
 
       localStorage.removeItem("userInfo");
     },

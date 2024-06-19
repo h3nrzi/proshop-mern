@@ -8,9 +8,13 @@ import { saveShippingAddress } from "../app/cart-slice";
 import { RootState } from "../app/store";
 import CheckoutSteps from "../components/CheckoutSteps";
 import FormContainer from "../components/FormContainer";
-import ShippingAddress from "../entities/ShippingAddress";
 
-type FormData = ShippingAddress;
+type FormData = {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
+};
 
 const ShippingPage = () => {
   const { register, handleSubmit } = useForm<FormData>();

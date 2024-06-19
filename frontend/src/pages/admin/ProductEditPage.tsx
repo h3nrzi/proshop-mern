@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Button, Form, Spinner, Stack } from "react-bootstrap";
+import { Button, Form, ListGroup, Spinner, Stack } from "react-bootstrap";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -52,7 +52,6 @@ const ProductEditPage = () => {
       toast.success("Product updated successfully", { position: "top-center" });
       navigate("/admin/product-list");
     } catch (err: any) {
-      console.log(err);
       toast.error(err?.data?.message || err.error, { position: "top-center" });
     }
   };

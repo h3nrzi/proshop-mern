@@ -266,6 +266,7 @@ const OrderPage = () => {
                     onClick={deliverOrderHandler}
                   >
                     Mark as Delivered
+                    {updateOrderToDeliverLoading && <Spinner size="sm" className="ms-2" />}
                   </Button>
                 </ListGroup.Item>
               )}

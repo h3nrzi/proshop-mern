@@ -9,8 +9,8 @@ const initialCartState: Cart = {
   shippingPrice: 0,
   taxPrice: 0,
   totalPrice: 0,
-  shippingAddress: null,
-  paymentMethod: null,
+  shippingAddress: undefined,
+  paymentMethod: undefined,
 };
 
 const persistedCartState: Cart | null = JSON.parse(localStorage.getItem("cart")!);
@@ -58,7 +58,7 @@ const cartSlice = createSlice({
 
     clearCartItems: (cart) => {
       cart.orderItems = [];
-      cart.shippingAddress = null;
+      cart.shippingAddress = undefined;
 
       cart = updateCart(cart);
       localStorage.setItem("cart", JSON.stringify(cart));

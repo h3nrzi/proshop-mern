@@ -1,12 +1,18 @@
 import Product from "./Product";
-import ShippingAddress from "./ShippingAddress";
+
+interface ShippingAddress {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: string;
+}
 
 export default interface Cart {
-  orderItems: Product[];
   itemsPrice: number;
+  orderItems: Product[];
+  paymentMethod?: string;
+  shippingAddress?: ShippingAddress;
   shippingPrice: number;
   taxPrice: number;
   totalPrice: number;
-  shippingAddress: ShippingAddress | null;
-  paymentMethod: string | null;
 }

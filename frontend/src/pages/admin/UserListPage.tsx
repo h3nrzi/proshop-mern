@@ -8,7 +8,7 @@ import { useDeleteUserMutation, useGetUsersQuery } from "../../api/users-api";
 import { RootState } from "../../app/store";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import UserInfo from "../../entities/UserInfo";
+import { UserInfo } from "../../entities/Auth";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 const UserListPage = () => {

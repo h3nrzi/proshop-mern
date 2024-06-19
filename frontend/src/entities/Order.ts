@@ -43,7 +43,6 @@ interface OrderItem {
 }
 
 export default interface Order {
-  __v: number;
   _id: string;
   createdAt: string;
   deliveredAt?: string;
