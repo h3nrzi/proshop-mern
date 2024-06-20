@@ -32,7 +32,7 @@ const ProductPage = () => {
     isLoading: productLoading,
     error: productError,
     refetch: productRefetch,
-  } = useGetProductQuery(productId!);
+  } = useGetProductQuery({ productId: productId! });
 
   const { register, handleSubmit, setValue } = useForm<FormData>();
 

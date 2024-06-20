@@ -26,7 +26,7 @@ const ProductEditPage = () => {
     isLoading: productLoading,
     error: productError,
     refetch: productRefetch,
-  } = useGetProductQuery(productId!);
+  } = useGetProductQuery({ productId: productId! });
 
   const [updateProductMutation, { isLoading: updateProductLoading }] = useUpdateProductMutation();
 

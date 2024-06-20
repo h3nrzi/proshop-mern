@@ -1,25 +1,28 @@
 import _ from "lodash";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useCreateProductMutation,
   useDeleteProductMutation,
-  useGetProductsQuery,
+  useGetAllProductQuery,
 } from "../../api/products-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import ReusableModal, { FooterButton } from "../../components/ReusableModal";
+import Paginate from "../../components/Paginate";
 
 const ProductListPage = () => {
+  const { pageNumber } = useParams();
+
   const {
-    data: products,
+    data,
     isLoading: productsLoading,
     error: productsError,
     refetch: productsRefetch,
-  } = useGetProductsQuery();
+  } = useGetAllProductQuery({ pageNumber: +pageNumber! });
 
   const [createProductMutation, { isLoading: createProductLoading }] = useCreateProductMutation();
 
@@ -40,7 +43,7 @@ const ProductListPage = () => {
   const deleteProductHandler = async (id: string) => {
     if (window.confirm("Are you sure you want to delete")) {
       try {
-        const res = await deleteProductMutation(id).unwrap();
+        const res = await deleteProductMutation({ productId: id }).unwrap();
         productsRefetch();
         toast.success(res.message, { position: "top-center" });
       } catch (err: any) {
@@ -60,9 +63,10 @@ const ProductListPage = () => {
   if (productsLoading) return <Loader />;
   if (deleteProductLoading) return <Loader />;
   if (productsError) return <Message>Something failed!</Message>;
+  if (!data?.products) return;
 
   return (
-    <>
+    <Fragment>
       <Row className="align-items-center mb-5">
         <Col>
           <h1>Products</h1>
@@ -94,7 +98,7 @@ const ProductListPage = () => {
           </tr>
         </thead>
         <tbody>
-          {products?.map((product) => (
+          {data.products.map((product) => (
             <tr key={product._id}>
               <td>{<Link to={`/product/${product._id}`}>{_.takeRight(product._id, 4)}</Link>}</td>
               <td>{product.name}</td>
@@ -120,7 +124,8 @@ const ProductListPage = () => {
           ))}
         </tbody>
       </Table>
-    </>
+      <Paginate isAdmin={true} page={data.page} pages={data.pages} />
+    </Fragment>
   );
 };
 

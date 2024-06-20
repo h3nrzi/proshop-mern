@@ -13,7 +13,7 @@ export interface CustomRequest extends Request {
 // @route   GET /api/products
 // @access  Public
 export const getProducts: RequestHandler = async (req, res, next) => {
-  const pageSize = 2;
+  const pageSize = 4;
   const page = Number(req.query.pageNumber) || 1;
   const count = await Product.countDocuments();
   const pages = Math.ceil(count / pageSize);
@@ -21,7 +21,7 @@ export const getProducts: RequestHandler = async (req, res, next) => {
   const products = await Product.find()
     .limit(pageSize)
     .skip((page - 1) * pageSize);
-  return res.json({ products, pages });
+  return res.json({ products, page, pages });
 };
 
 // @desc    Fetch a product

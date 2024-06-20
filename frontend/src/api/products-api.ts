@@ -2,76 +2,107 @@ import { PRODUCT_URL, UPLOAD_URL } from "../constants";
 import Product from "../entities/Product";
 import apiSlice from "./api-slice";
 
+interface ProductResponses {
+  GetAll: {
+    products: Product[];
+    page: number;
+    pages: number;
+  };
+  GetOne: Product;
+  Create: Product;
+  Update: Product;
+  Delete: {
+    message: string;
+  };
+  UploadImage: {
+    message: string;
+    image: string;
+  };
+  CreateReview: {
+    message: string;
+  };
+}
+
+const PRODUCT_TAG = "Product";
+const KEEP_UNUSED_DATA_FOR = 5 * 60 * 1000; // 5 minutes
+
 const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query<{ products: Product[]; pages: number }, { pageNumber: number }>({
+    getAllProduct: builder.query<ProductResponses["GetAll"], { pageNumber?: number }>({
       query: ({ pageNumber }) => ({
         url: PRODUCT_URL,
-        params: { pageNumber }, // query string
+        params: { pageNumber },
       }),
-      keepUnusedDataFor: 5 * 60 * 1000, // 5min
-      providesTags: ["Product"],
+      keepUnusedDataFor: KEEP_UNUSED_DATA_FOR,
+      providesTags: [PRODUCT_TAG],
     }),
 
-    getProduct: builder.query<Product, string>({
-      query: (productId) => ({ url: PRODUCT_URL + "/" + productId }),
-      keepUnusedDataFor: 5 * 60 * 1000, // 5min
+    getProduct: builder.query<ProductResponses["GetOne"], { productId: string }>({
+      query: ({ productId }) => ({
+        url: `${PRODUCT_URL}/${productId}`,
+      }),
+      keepUnusedDataFor: KEEP_UNUSED_DATA_FOR,
     }),
 
-    createProduct: builder.mutation<Product, void>({
+    createProduct: builder.mutation<ProductResponses["Create"], void>({
       query: () => ({
         url: PRODUCT_URL,
         method: "POST",
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: [PRODUCT_TAG],
     }),
 
-    updateProduct: builder.mutation<Product, { productId: string; data: Product }>({
+    updateProduct: builder.mutation<
+      ProductResponses["Update"],
+      { productId: string; data: Product }
+    >({
       query: ({ productId, data }) => ({
-        url: PRODUCT_URL + "/" + productId,
+        url: `${PRODUCT_URL}/${productId}`,
         method: "PATCH",
-        body: { ...data },
+        body: data,
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: [PRODUCT_TAG],
     }),
 
-    deleteProduct: builder.mutation<{ message: string }, string>({
-      query: (productId) => ({
-        url: PRODUCT_URL + "/" + productId,
+    deleteProduct: builder.mutation<ProductResponses["Delete"], { productId: string }>({
+      query: ({ productId }) => ({
+        url: `${PRODUCT_URL}/${productId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: [PRODUCT_TAG],
     }),
 
-    uploadProductImage: builder.mutation<{ message: string; image: string }, FormData>({
+    uploadProductImage: builder.mutation<ProductResponses["UploadImage"], FormData>({
       query: (formData) => ({
         url: UPLOAD_URL,
         method: "POST",
         body: formData,
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: [PRODUCT_TAG],
     }),
 
     createProductReview: builder.mutation<
-      { message: string },
+      ProductResponses["CreateReview"],
       { comment: string; rating: number; productId: string }
     >({
-      query: (data) => ({
-        url: PRODUCT_URL + "/" + data.productId + "/review",
+      query: ({ comment, rating, productId }) => ({
+        url: `${PRODUCT_URL}/${productId}/review`,
         method: "POST",
-        body: data,
+        body: { comment, rating, productId },
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: [PRODUCT_TAG],
     }),
   }),
 });
 
 export const {
-  useGetProductsQuery,
+  useGetAllProductQuery,
   useGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
-  useUploadProductImageMutation,
   useDeleteProductMutation,
+  useUploadProductImageMutation,
   useCreateProductReviewMutation,
 } = productApi;
+
+export default productApi;
