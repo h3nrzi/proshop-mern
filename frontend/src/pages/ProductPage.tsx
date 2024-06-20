@@ -34,7 +34,7 @@ const ProductPage = () => {
     refetch: productRefetch,
   } = useGetProductQuery(productId!);
 
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit, setValue } = useForm<FormData>();
 
   const [createProductReviewMutation, { isLoading: createProductReviewLoading }] =
     useCreateProductReviewMutation();
@@ -64,6 +64,8 @@ const ProductPage = () => {
       const res = await createProductReviewMutation({ productId: productId!, ...data }).unwrap();
       productRefetch();
       toast.success(res.message, { position: "top-center" });
+      setValue("comment", "");
+      setValue("rating", 0);
     } catch (err: any) {
       toast.error(err?.data?.message || err.error, { position: "top-center" });
     }
