@@ -9,17 +9,19 @@ import { getErrorMessage } from "../utils/getErrorMessage";
 import Paginate from "../components/Paginate";
 
 const HomePage = () => {
-  const { pageNumber } = useParams();
+  const { pageNumber, keyword } = useParams();
+
+  console.log(pageNumber, keyword);
 
   const {
     data,
     isLoading: productQueryLoading,
     error: productQueryError,
-  } = useGetAllProductQuery({ pageNumber: +pageNumber! });
-  if (!data?.products && !data?.pages && !data?.page) return;
+  } = useGetAllProductQuery({ pageNumber: +pageNumber!, keyword });
 
   if (productQueryLoading) return <Loader />;
   if (productQueryError) return <Message>{getErrorMessage(productQueryError)}</Message>;
+  if (!data?.products && !data?.pages && !data?.page) return;
 
   return (
     <Fragment>
@@ -31,7 +33,7 @@ const HomePage = () => {
           </Col>
         ))}
       </Row>
-      <Paginate isAdmin={false} page={data.page} pages={data.pages} />
+      <Paginate isAdmin={false} page={data.page} pages={data.pages} keyword={keyword} />
     </Fragment>
   );
 };

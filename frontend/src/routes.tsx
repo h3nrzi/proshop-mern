@@ -24,7 +24,10 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "search/:keyword", element: <HomePage /> },
       { path: "page/:pageNumber", element: <HomePage /> },
+      { path: "search/:keyword/page/:pageNumber", element: <HomePage /> },
+
       { path: "product/:id", element: <ProductPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "login", element: <LoginPage /> },
@@ -42,10 +45,12 @@ const router = createBrowserRouter([
             path: "admin",
             element: <AdminLayout />,
             children: [
-              { path: "order-list", element: <OrderListPage /> },
               { path: "product-list", element: <ProductListPage /> },
               { path: "product-list/page/:pageNumber", element: <ProductListPage /> },
+
+              { path: "order-list", element: <OrderListPage /> },
               { path: "product/:id/edit", element: <ProductEditPage /> },
+
               { path: "user-list", element: <UserListPage /> },
               { path: "user/:id/edit", element: <UserEditPage /> },
             ],

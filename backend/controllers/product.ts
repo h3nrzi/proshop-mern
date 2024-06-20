@@ -13,15 +13,20 @@ export interface CustomRequest extends Request {
 // @route   GET /api/products
 // @access  Public
 export const getProducts: RequestHandler = async (req, res, next) => {
+  const { keyword, pageNumber } = req.query;
   const pageSize = 4;
-  const page = Number(req.query.pageNumber) || 1;
-  const count = await Product.countDocuments();
+  const page = Number(pageNumber) || 1;
+
+  const searchCriteria = keyword ? { name: { $regex: keyword, $options: "i" } } : {};
+
+  const count = await Product.countDocuments(searchCriteria);
   const pages = Math.ceil(count / pageSize);
 
-  const products = await Product.find()
+  const products = await Product.find(searchCriteria)
     .limit(pageSize)
     .skip((page - 1) * pageSize);
-  return res.json({ products, page, pages });
+
+  res.json({ products, page, pages });
 };
 
 // @desc    Fetch a product

@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { Pagination } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -5,13 +6,15 @@ interface Props {
   isAdmin: boolean;
   page: number;
   pages: number;
+  keyword?: string;
 }
 
-const Paginate = ({ pages, page, isAdmin }: Props) => {
+const Paginate: FC<Props> = ({ pages, page, isAdmin, keyword = "" }) => {
   const navigate = useNavigate();
 
   const handlePageChange = (pageNumber: number) => {
     if (isAdmin) return navigate(`/admin/product-list/page/${pageNumber}`);
+    if (keyword) return navigate(`/search/${keyword}/page/${pageNumber}`);
     navigate(`/page/${pageNumber}`);
   };
 

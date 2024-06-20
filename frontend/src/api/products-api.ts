@@ -28,10 +28,13 @@ const KEEP_UNUSED_DATA_FOR = 5 * 60 * 1000; // 5 minutes
 
 const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllProduct: builder.query<ProductResponses["GetAll"], { pageNumber?: number }>({
-      query: ({ pageNumber }) => ({
+    getAllProduct: builder.query<
+      ProductResponses["GetAll"],
+      { pageNumber?: number; keyword?: string }
+    >({
+      query: ({ pageNumber, keyword }) => ({
         url: PRODUCT_URL,
-        params: { pageNumber },
+        params: { pageNumber, keyword },
       }),
       keepUnusedDataFor: KEEP_UNUSED_DATA_FOR,
       providesTags: [PRODUCT_TAG],
