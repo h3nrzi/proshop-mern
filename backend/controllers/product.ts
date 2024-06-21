@@ -43,6 +43,14 @@ export const getProduct: RequestHandler = async (req, res, next) => {
   return res.status(200).json(product);
 };
 
+// @desc    Get top rated products
+// @route   GET /api/products/top
+// @access  Public
+export const getTopProducts: RequestHandler = async (req, res, next) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  return res.status(200).json(products);
+};
+
 // @desc    Create a product
 // @route   POST /api/products
 // @access  Private/Admin

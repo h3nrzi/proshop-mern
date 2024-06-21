@@ -2,25 +2,15 @@ import { PRODUCT_URL, UPLOAD_URL } from "../constants";
 import Product from "../entities/Product";
 import apiSlice from "./api-slice";
 
-interface ProductResponses {
-  GetAll: {
-    products: Product[];
-    page: number;
-    pages: number;
-  };
+interface Response {
+  GetAll: { products: Product[]; page: number; pages: number };
   GetOne: Product;
   Create: Product;
   Update: Product;
-  Delete: {
-    message: string;
-  };
-  UploadImage: {
-    message: string;
-    image: string;
-  };
-  CreateReview: {
-    message: string;
-  };
+  Delete: { message: string };
+  UploadImage: { message: string; image: string };
+  CreateReview: { message: string };
+  TopProducts: Product[];
 }
 
 const PRODUCT_TAG = "Product";
@@ -28,10 +18,7 @@ const KEEP_UNUSED_DATA_FOR = 5 * 60 * 1000; // 5 minutes
 
 const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllProduct: builder.query<
-      ProductResponses["GetAll"],
-      { pageNumber?: number; keyword?: string }
-    >({
+    getAllProduct: builder.query<Response["GetAll"], { pageNumber?: number; keyword?: string }>({
       query: ({ pageNumber, keyword }) => ({
         url: PRODUCT_URL,
         params: { pageNumber, keyword },
@@ -40,14 +27,18 @@ const productApi = apiSlice.injectEndpoints({
       providesTags: [PRODUCT_TAG],
     }),
 
-    getProduct: builder.query<ProductResponses["GetOne"], { productId: string }>({
-      query: ({ productId }) => ({
-        url: `${PRODUCT_URL}/${productId}`,
-      }),
+    getProduct: builder.query<Response["GetOne"], { productId: string }>({
+      query: ({ productId }) => ({ url: `${PRODUCT_URL}/${productId}` }),
       keepUnusedDataFor: KEEP_UNUSED_DATA_FOR,
     }),
 
-    createProduct: builder.mutation<ProductResponses["Create"], void>({
+    getTopProducts: builder.query<Response["TopProducts"], void>({
+      query: () => ({ url: `${PRODUCT_URL}/top` }),
+    }),
+
+    //////////////////////////////////////
+
+    createProduct: builder.mutation<Response["Create"], void>({
       query: () => ({
         url: PRODUCT_URL,
         method: "POST",
@@ -55,10 +46,7 @@ const productApi = apiSlice.injectEndpoints({
       invalidatesTags: [PRODUCT_TAG],
     }),
 
-    updateProduct: builder.mutation<
-      ProductResponses["Update"],
-      { productId: string; data: Product }
-    >({
+    updateProduct: builder.mutation<Response["Update"], { productId: string; data: Product }>({
       query: ({ productId, data }) => ({
         url: `${PRODUCT_URL}/${productId}`,
         method: "PATCH",
@@ -67,7 +55,7 @@ const productApi = apiSlice.injectEndpoints({
       invalidatesTags: [PRODUCT_TAG],
     }),
 
-    deleteProduct: builder.mutation<ProductResponses["Delete"], { productId: string }>({
+    deleteProduct: builder.mutation<Response["Delete"], { productId: string }>({
       query: ({ productId }) => ({
         url: `${PRODUCT_URL}/${productId}`,
         method: "DELETE",
@@ -75,7 +63,7 @@ const productApi = apiSlice.injectEndpoints({
       invalidatesTags: [PRODUCT_TAG],
     }),
 
-    uploadProductImage: builder.mutation<ProductResponses["UploadImage"], FormData>({
+    uploadProductImage: builder.mutation<Response["UploadImage"], FormData>({
       query: (formData) => ({
         url: UPLOAD_URL,
         method: "POST",
@@ -85,7 +73,7 @@ const productApi = apiSlice.injectEndpoints({
     }),
 
     createProductReview: builder.mutation<
-      ProductResponses["CreateReview"],
+      Response["CreateReview"],
       { comment: string; rating: number; productId: string }
     >({
       query: ({ comment, rating, productId }) => ({
@@ -99,13 +87,16 @@ const productApi = apiSlice.injectEndpoints({
 });
 
 export const {
+  useCreateProductMutation,
+  useCreateProductReviewMutation,
+  useDeleteProductMutation,
   useGetAllProductQuery,
   useGetProductQuery,
-  useCreateProductMutation,
+  useGetTopProductsQuery,
   useUpdateProductMutation,
-  useDeleteProductMutation,
   useUploadProductImageMutation,
-  useCreateProductReviewMutation,
 } = productApi;
 
 export default productApi;
+
+// product carousel

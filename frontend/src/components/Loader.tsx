@@ -9,7 +9,7 @@ const Loader = () => {
         width: "100px",
         height: "100px",
         display: "block",
-        margin: "15rem auto",
+        margin: "10rem auto 0",
       }}
     />
   );
