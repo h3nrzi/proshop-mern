@@ -38,7 +38,7 @@ const Header = () => {
             </Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav" className="d-md-flex">
+          <Navbar.Collapse id="basic-navbar-nav" className="d-md-flex gap-2">
             <div className="flex-grow-1">
               <SearchBox />
             </div>
