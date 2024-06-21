@@ -1,21 +1,21 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface FormData {
   keyword: string;
 }
 
 const SearchBox = () => {
-  const { keyword } = useParams();
   const navigate = useNavigate();
   const { register, handleSubmit, setValue } = useForm<FormData>();
 
-  setValue("keyword", keyword || "");
+  const [searchParams] = useSearchParams();
+  setValue("keyword", searchParams.get("keyword") || "");
 
   function submitHandler(data: FormData) {
-    if (data.keyword) return navigate(`/search/${data.keyword}`);
+    if (data.keyword) return navigate(`?q=${data.keyword}`);
     return navigate("/");
   }
 

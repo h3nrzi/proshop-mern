@@ -14,9 +14,9 @@ export interface CustomRequest extends Request {
 // @access  Public
 export const getProducts: RequestHandler = async (req, res, next) => {
   const { keyword, pageNumber } = req.query;
+
   const pageSize = 4;
   const page = Number(pageNumber) || 1;
-
   const searchCriteria = keyword ? { name: { $regex: keyword, $options: "i" } } : {};
 
   const count = await Product.countDocuments(searchCriteria);

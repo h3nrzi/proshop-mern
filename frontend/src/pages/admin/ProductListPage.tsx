@@ -2,7 +2,7 @@ import _ from "lodash";
 import { Fragment, useState } from "react";
 import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, useParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useCreateProductMutation,
@@ -11,18 +11,19 @@ import {
 } from "../../api/products-api";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
-import ReusableModal, { FooterButton } from "../../components/ReusableModal";
 import Paginate from "../../components/Paginate";
+import ReusableModal, { FooterButton } from "../../components/ReusableModal";
 
 const ProductListPage = () => {
-  const { pageNumber } = useParams();
+  const [searchParams] = useSearchParams();
+  const pageNumber = Number(searchParams.get("page")) || 1;
 
   const {
     data,
     isLoading: productsLoading,
     error: productsError,
     refetch: productsRefetch,
-  } = useGetAllProductQuery({ pageNumber: +pageNumber! });
+  } = useGetAllProductQuery({ pageNumber });
 
   const [createProductMutation, { isLoading: createProductLoading }] = useCreateProductMutation();
 

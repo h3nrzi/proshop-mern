@@ -1,5 +1,5 @@
 import { Col, Row } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import { useGetAllProductQuery } from "../api/products-api";
 import Loader from "../components/Loader";
@@ -9,13 +9,15 @@ import ProductCard from "../components/ProductCard";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
 const HomePage = () => {
-  const { pageNumber, keyword } = useParams();
+  const [searchParams] = useSearchParams();
+  const pageNumber = Number(searchParams.get("page")) || 1;
+  const keyword = searchParams.get("q") || "";
 
   const {
     data,
     isLoading: productQueryLoading,
     error: productQueryError,
-  } = useGetAllProductQuery({ pageNumber: +pageNumber!, keyword });
+  } = useGetAllProductQuery({ pageNumber, keyword });
 
   if (productQueryLoading) return <Loader />;
   if (productQueryError) return <Message>{getErrorMessage(productQueryError)}</Message>;

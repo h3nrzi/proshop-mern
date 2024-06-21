@@ -9,13 +9,13 @@ interface Props {
   keyword?: string;
 }
 
-const Paginate: FC<Props> = ({ pages, page, isAdmin, keyword = "" }) => {
+const Paginate: FC<Props> = ({ pages, page, isAdmin, keyword }) => {
   const navigate = useNavigate();
 
   const handlePageChange = (pageNumber: number) => {
-    if (isAdmin) return navigate(`/admin/product-list/page/${pageNumber}`);
-    if (keyword) return navigate(`/search/${keyword}/page/${pageNumber}`);
-    navigate(`/page/${pageNumber}`);
+    if (isAdmin) return navigate(`/admin/product-list?page=${pageNumber}`);
+    if (keyword) return navigate(`?q=${keyword}&page=${pageNumber}`);
+    navigate(`/?page=${pageNumber}`);
   };
 
   return (
