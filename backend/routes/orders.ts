@@ -1,7 +1,7 @@
 import express from "express";
 import {
   createOrder,
-  getOrders,
+  getAllOrders,
   getMyOrders,
   getOrder,
   updateOrderToDeliver,
@@ -20,7 +20,7 @@ router.get("/:id", catchAsync(getOrder));
 
 ////////// Admin
 router.use(catchAsync(auth.admin));
-router.get("/", catchAsync(getOrders));
+router.get("/", catchAsync(getAllOrders));
 router.patch("/:id/deliver", catchAsync(updateOrderToDeliver));
 
 export default router;

@@ -10,7 +10,7 @@ export interface CustomRequest extends Request {
 // @desc    Get All Orders
 // @route   GET /api/orders
 // @access  Private - > Admin
-export const getOrders: RequestHandler = async (req, res, next) => {
+export const getAllOrders: RequestHandler = async (req, res, next) => {
   const orders = await Order.find().populate("user", "_id name");
   res.status(200).send(orders);
 };
@@ -73,7 +73,6 @@ export const createOrder: RequestHandler = async (req: CustomRequest, res, next)
 // @access  Private
 export const getMyOrders: RequestHandler = async (req: CustomRequest, res, next) => {
   const orders = await Order.find({ user: req.user._id });
-
   res.status(200).send(orders);
 };
 

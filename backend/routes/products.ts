@@ -2,7 +2,7 @@ import express from "express";
 import {
   createProduct,
   getProduct,
-  getProducts,
+  getAllProducts,
   updateProduct,
   deleteProduct,
   createProductReview,
@@ -11,7 +11,7 @@ import auth from "../middlewares/auth";
 import catchAsync from "../middlewares/catchAsync";
 const router = express.Router();
 
-router.route("/").get(catchAsync(getProducts));
+router.route("/").get(catchAsync(getAllProducts));
 router.route("/:id").get(catchAsync(getProduct));
 
 /////////////////// Private

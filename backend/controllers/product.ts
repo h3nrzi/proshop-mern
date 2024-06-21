@@ -12,7 +12,7 @@ export interface CustomRequest extends Request {
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
-export const getProducts: RequestHandler = async (req, res, next) => {
+export const getAllProducts: RequestHandler = async (req, res, next) => {
   const { keyword, pageNumber } = req.query;
 
   const pageSize = 4;
