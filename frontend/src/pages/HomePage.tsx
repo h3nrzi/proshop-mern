@@ -4,14 +4,12 @@ import { Fragment } from "react/jsx-runtime";
 import { useGetAllProductQuery } from "../api/products-api";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Paginate from "../components/Paginate";
 import ProductCard from "../components/ProductCard";
 import { getErrorMessage } from "../utils/getErrorMessage";
-import Paginate from "../components/Paginate";
 
 const HomePage = () => {
   const { pageNumber, keyword } = useParams();
-
-  console.log(pageNumber, keyword);
 
   const {
     data,

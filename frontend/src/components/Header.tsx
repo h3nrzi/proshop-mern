@@ -7,6 +7,7 @@ import { useLogoutMutation } from "../api/users-api";
 import { clearCredentials } from "../app/auth-slice";
 import { RootState } from "../app/store";
 import logo from "../assets/logo.png";
+import SearchBox from "./SearchBox";
 
 const Header = () => {
   const orderItems = useSelector((state: RootState) => state.cart.orderItems);
@@ -37,8 +38,12 @@ const Header = () => {
             </Navbar.Brand>
           </Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
+          <Navbar.Collapse id="basic-navbar-nav" className="d-md-flex">
+            <div className="flex-grow-1">
+              <SearchBox />
+            </div>
+
+            <Nav>
               {/* ADMIN */}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title={"Admin"} id="adminmenu">
