@@ -15,7 +15,7 @@ const Paginate: FC<Props> = ({ pages, page, isAdmin, keyword }) => {
   const handlePageChange = (pageNumber: number) => {
     if (isAdmin) return navigate(`/admin/product-list?page=${pageNumber}`);
     if (keyword) return navigate(`?q=${keyword}&page=${pageNumber}`);
-    navigate(`/?page=${pageNumber}`);
+    navigate(`?page=${pageNumber}`);
   };
 
   return (

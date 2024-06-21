@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { Fragment, useState } from "react";
-import { Button, Col, Row, Spinner, Table } from "react-bootstrap";
+import { Button, Col, Row, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   useCreateProductMutation,
@@ -15,6 +15,7 @@ import Paginate from "../../components/Paginate";
 import ReusableModal, { FooterButton } from "../../components/ReusableModal";
 
 const ProductListPage = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const pageNumber = Number(searchParams.get("page")) || 1;
 
@@ -23,21 +24,21 @@ const ProductListPage = () => {
     isLoading: productsLoading,
     error: productsError,
     refetch: productsRefetch,
+    isFetching: productsFetching,
   } = useGetAllProductQuery({ pageNumber });
 
-  const [createProductMutation, { isLoading: createProductLoading }] = useCreateProductMutation();
-
-  const [deleteProductMutation, { isLoading: deleteProductLoading }] = useDeleteProductMutation();
+  const [createProductMutation] = useCreateProductMutation();
+  const [deleteProductMutation] = useDeleteProductMutation();
 
   const createProductHandler = async () => {
     try {
+      closeModalHandler();
       await createProductMutation();
       productsRefetch();
       toast.success("Product created successfully!", { position: "top-center" });
-      closeModalHandler();
     } catch (err: any) {
-      toast.error(err?.data?.message || err?.error, { position: "top-center" });
       closeModalHandler();
+      toast.error(err?.data?.message || err?.error, { position: "top-center" });
     }
   };
 
@@ -61,10 +62,10 @@ const ProductListPage = () => {
     { label: "Ok", onCreate: createProductHandler, variant: "primary" },
   ];
 
-  if (productsLoading) return <Loader />;
-  if (deleteProductLoading) return <Loader />;
+  if (productsLoading || productsFetching) return <Loader />;
   if (productsError) return <Message>Something failed!</Message>;
-  if (!data?.products) return;
+  if (!data) return;
+  if (pageNumber > data.pages) navigate(`?page=${data.pages}`);
 
   return (
     <Fragment>
@@ -74,7 +75,7 @@ const ProductListPage = () => {
         </Col>
         <Col className="text-end">
           <Button className="btn-sm m-3 px-2 py-1 text-center" onClick={showModalHandler}>
-            Create New Product {createProductLoading && <Spinner size="sm" className="me-1" />}
+            Create New Product
           </Button>
           <ReusableModal
             showModal={showModal}
