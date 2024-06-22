@@ -1,5 +1,5 @@
 import express, { Express } from "express";
-import globalErrorHandler from "../middlewares/globalErrorHandler";
+import globalErrorHandler from "../controllers/globalErrorHandler";
 import notFound from "../middlewares/notFound";
 import productRoutes from "../routes/products";
 import userRoutes from "../routes/users";

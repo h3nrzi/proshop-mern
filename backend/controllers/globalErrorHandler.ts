@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  let environment = process.env.NODE_ENV;
+  let NODE_ENV = process.env.NODE_ENV;
   let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   let message = err.message;
 
@@ -13,7 +13,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   return res.status(statusCode).json({
     message,
-    stack: environment === "production" ? "😬😬😬" : err.stack,
+    stack: NODE_ENV === "production" ? "😬😬😬" : err.stack,
   });
 };
 
