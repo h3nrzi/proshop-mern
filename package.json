@@ -4,12 +4,13 @@
   "description": "eCommerce application built with the MERN stack",
   "main": "server.ts",
   "scripts": {
-    "start": "node backend/dist/server.js",
+    "data:import": "ts-node backend/data/seeder.ts -i",
+    "data:destroy": "ts-node backend/data/seeder.ts -d",
     "server": "nodemon backend/server.ts",
     "client": "npm run dev --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "data:import": "ts-node backend/data/seeder.ts -i",
-    "data:destroy": "ts-node backend/data/seeder.ts -d"
+    "start:dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "npm i && npm i --prefix frontend && tsc -p backend && npm run build --prefix frontend",
+    "start": "node backend/dist/server.js"
   },
   "author": "Hossein Rezaei",
   "license": "ISC",
